@@ -1,40 +1,97 @@
-<section class="text-center py-16">
-  <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
-    Traduza legendas em segundos
+<!-- ═══ HERO BANNER WITH LOGO ═══ -->
+<section class="starburst speed-lines text-center py-16 relative">
+
+  <!-- Logo Video Banner -->
+  <div class="anim-scale-in mb-8">
+    <div class="logo-banner rounded-xl mx-auto max-w-2xl overflow-hidden shadow-2xl corner-brackets"
+         style="box-shadow: 0 0 60px rgba(124, 58, 237, 0.2), 0 0 120px rgba(225, 29, 72, 0.1);">
+      <video autoplay loop muted playsinline
+             class="w-full h-56 object-cover"
+             style="filter: saturate(1.2) contrast(1.05);">
+        <source src="/logo.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <!-- Title with Tokusatsu flair -->
+  <div class="anim-slide-up delay-1">
+    <p class="font-cyber text-xs tracking-widest uppercase mb-4"
+       style="color: var(--toku-gold);">
+      &#x2501;&#x2501; Tradutor de Legendas &#x2501;&#x2501;
+    </p>
+  </div>
+
+  <h1 class="anim-slide-up delay-2 font-hero text-4xl sm:text-5xl tracking-tight text-white text-glow-red slash-decoration"
+      style="line-height: 1.2;">
+    Traduza Legendas<br>
+    <span style="color: var(--toku-gold);" class="text-glow-gold">em Segundos</span>
   </h1>
-  <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-    Faca upload do seu arquivo SRT e receba a traducao em qualquer idioma.
-    Sem cadastro. Pague com PIX. A partir de R$ 2,00.
+
+  <p class="anim-fade-in delay-3 mt-6 text-lg max-w-2xl mx-auto leading-relaxed"
+     style="color: var(--toku-silver);">
+    Faca upload do seu arquivo SRT e receba a traducao em qualquer idioma.<br>
+    Sem cadastro. Pague com PIX. A partir de <strong style="color: var(--toku-gold);">R$ 2,00</strong>.
   </p>
 
-  <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-    <%= link_to "Traduzir Agora", new_translation_path,
-        class: "inline-block rounded-lg bg-emerald-600 px-8 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition" %>
-    <%= link_to "Ja tenho um codigo", recover_path,
-        class: "inline-block rounded-lg border border-slate-600 px-8 py-3 text-base font-semibold text-slate-300 hover:bg-slate-800 transition" %>
+  <!-- CTA Buttons -->
+  <div class="anim-slide-up delay-4 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+    <%= link_to new_translation_path,
+        class: "toku-btn-primary inline-block rounded-lg px-8 py-3 text-base font-semibold text-white tracking-wider uppercase font-tokusatsu" do %>
+      Traduzir Agora
+    <% end %>
+    <%= link_to recover_path,
+        class: "toku-btn-secondary inline-block rounded-lg px-8 py-3 text-base font-semibold tracking-wider uppercase font-tokusatsu" do %>
+      Ja tenho um codigo
+    <% end %>
   </div>
 </section>
 
+<!-- ═══ COMO FUNCIONA ═══ -->
 <section class="py-16">
-  <h2 class="text-2xl font-bold text-center text-white mb-12">Como Funciona</h2>
+  <div class="anim-fade-in text-center mb-12">
+    <p class="font-cyber text-xs tracking-widest uppercase mb-2"
+       style="color: var(--toku-purple);">
+      &#x25C6; Missao &#x25C6;
+    </p>
+    <h2 class="font-hero text-2xl text-white text-glow-red">Como Funciona</h2>
+  </div>
 
   <div class="grid sm:grid-cols-3 gap-8">
-    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
-      <div class="text-3xl mb-4">1</div>
-      <h3 class="text-lg font-semibold text-white mb-2">Upload</h3>
-      <p class="text-sm text-slate-400">Envie seu arquivo .srt e escolha o idioma de destino.</p>
+    <!-- Step 1 -->
+    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-1">
+      <div class="step-number mb-4">01</div>
+      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Upload</h3>
+      <p class="text-sm" style="color: var(--toku-silver);">
+        Envie seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded"
+        style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>
+        e escolha o idioma de destino.
+      </p>
     </div>
 
-    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
-      <div class="text-3xl mb-4">2</div>
-      <h3 class="text-lg font-semibold text-white mb-2">Pague com PIX</h3>
-      <p class="text-sm text-slate-400">Escaneie o QR code ou copie o codigo PIX. Pagamento instantaneo.</p>
+    <!-- Step 2 -->
+    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-2">
+      <div class="step-number mb-4">02</div>
+      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Pague com PIX</h3>
+      <p class="text-sm" style="color: var(--toku-silver);">
+        Escaneie o QR code ou copie o codigo PIX. Pagamento instantaneo.
+      </p>
     </div>
 
-    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
-      <div class="text-3xl mb-4">3</div>
-      <h3 class="text-lg font-semibold text-white mb-2">Download</h3>
-      <p class="text-sm text-slate-400">Receba o arquivo traduzido em segundos apos a confirmacao.</p>
+    <!-- Step 3 -->
+    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-3">
+      <div class="step-number mb-4">03</div>
+      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Download</h3>
+      <p class="text-sm" style="color: var(--toku-silver);">
+        Receba o arquivo traduzido em segundos apos a confirmacao.
+      </p>
     </div>
   </div>
 </section>
+
+<!-- ═══ BOTTOM DECORATION ═══ -->
+<div class="text-center py-8 anim-fade-in delay-5">
+  <div style="width: 120px; height: 2px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--toku-red), var(--toku-gold), var(--toku-red), transparent);"></div>
+  <p class="font-cyber text-xs tracking-widest mt-4" style="color: rgba(124, 58, 237, 0.5);">
+    LEGENDATOR &mdash; 2025
+  </p>
+</div>
