@@ -1,1 +1,76 @@
-<h1>Translation</h1>
+<% if @translation.pending_payment? || @translation.paid? || @translation.processing? %>
+  <% content_for :head do %>
+    <meta http-equiv="refresh" content="5">
+  <% end %>
+<% end %>
+
+<div class="max-w-xl mx-auto">
+  <%# Recovery code %>
+  <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-6 mb-8 text-center">
+    <p class="text-sm text-slate-400 mb-1">Seu codigo de recuperacao</p>
+    <p class="text-2xl font-mono font-bold text-emerald-400 tracking-wider"><%= @translation.formatted_code %></p>
+    <p class="text-xs text-slate-500 mt-2">Este codigo aparecera no seu extrato bancario.</p>
+  </div>
+
+  <%# Status-dependent content %>
+  <% if @translation.pending_payment? %>
+    <div class="text-center mb-8">
+      <h1 class="text-2xl font-bold text-white mb-2">Pagamento Pendente</h1>
+      <p class="text-3xl font-bold text-emerald-400">R$ <%= "%.2f" % @translation.cost_brl %></p>
+    </div>
+
+    <% if @translation.payment&.pix_qr_code_base64.present? %>
+      <div class="flex justify-center mb-6">
+        <img src="data:image/png;base64,<%= @translation.payment.pix_qr_code_base64 %>"
+             alt="QR Code PIX"
+             class="w-56 h-56 rounded-lg bg-white p-2">
+      </div>
+    <% end %>
+
+    <% if @translation.payment&.pix_copy_paste.present? %>
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-slate-400 mb-1">PIX Copia e Cola</label>
+        <div class="flex">
+          <input type="text" readonly value="<%= @translation.payment.pix_copy_paste %>"
+                 class="flex-1 rounded-l-lg bg-slate-800 border border-slate-600 text-slate-200 px-4 py-2.5 text-sm font-mono truncate">
+          <button onclick="navigator.clipboard.writeText(this.previousElementSibling.value)"
+                  class="rounded-r-lg bg-slate-700 border border-l-0 border-slate-600 px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-slate-600 transition">
+            Copiar
+          </button>
+        </div>
+      </div>
+    <% end %>
+
+  <% elsif @translation.paid? || @translation.processing? %>
+    <div class="text-center py-12">
+      <div class="inline-block w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin mb-6"></div>
+      <h1 class="text-2xl font-bold text-white mb-2">Traduzindo...</h1>
+      <p class="text-slate-400">Seu arquivo esta sendo traduzido. Esta pagina atualiza automaticamente.</p>
+    </div>
+
+  <% elsif @translation.completed? %>
+    <div class="text-center py-12">
+      <h1 class="text-2xl font-bold text-emerald-400 mb-2">Pronto!</h1>
+      <p class="text-slate-400 mb-8">Sua traducao esta disponivel para download.</p>
+      <%= link_to "Baixar arquivo traduzido", download_translation_path(@translation),
+          class: "inline-block rounded-lg bg-emerald-600 px-8 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition" %>
+    </div>
+
+  <% elsif @translation.failed? %>
+    <div class="text-center py-12">
+      <h1 class="text-2xl font-bold text-red-400 mb-2">Erro na traducao</h1>
+      <p class="text-slate-400">Ocorreu um erro ao processar sua traducao. Por favor, tente novamente.</p>
+    </div>
+
+  <% elsif @translation.expired? %>
+    <div class="text-center py-12">
+      <h1 class="text-2xl font-bold text-yellow-400 mb-2">Traducao expirada</h1>
+      <p class="text-slate-400">Esta traducao expirou. Por favor, crie uma nova.</p>
+    </div>
+  <% end %>
+
+  <div class="mt-10 text-center">
+    <%= link_to "Traduzir outra", new_translation_path,
+        class: "text-sm text-slate-400 hover:text-white transition" %>
+  </div>
+</div>

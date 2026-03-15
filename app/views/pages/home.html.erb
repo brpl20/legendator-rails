@@ -1,1 +1,40 @@
-<h1>Legendator</h1>
+<section class="text-center py-16">
+  <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-white">
+    Traduza legendas em segundos
+  </h1>
+  <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+    Faca upload do seu arquivo SRT e receba a traducao em qualquer idioma.
+    Sem cadastro. Pague com PIX. A partir de R$ 2,00.
+  </p>
+
+  <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+    <%= link_to "Traduzir Agora", new_translation_path,
+        class: "inline-block rounded-lg bg-emerald-600 px-8 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition" %>
+    <%= link_to "Ja tenho um codigo", recover_path,
+        class: "inline-block rounded-lg border border-slate-600 px-8 py-3 text-base font-semibold text-slate-300 hover:bg-slate-800 transition" %>
+  </div>
+</section>
+
+<section class="py-16">
+  <h2 class="text-2xl font-bold text-center text-white mb-12">Como Funciona</h2>
+
+  <div class="grid sm:grid-cols-3 gap-8">
+    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
+      <div class="text-3xl mb-4">1</div>
+      <h3 class="text-lg font-semibold text-white mb-2">Upload</h3>
+      <p class="text-sm text-slate-400">Envie seu arquivo .srt e escolha o idioma de destino.</p>
+    </div>
+
+    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
+      <div class="text-3xl mb-4">2</div>
+      <h3 class="text-lg font-semibold text-white mb-2">Pague com PIX</h3>
+      <p class="text-sm text-slate-400">Escaneie o QR code ou copie o codigo PIX. Pagamento instantaneo.</p>
+    </div>
+
+    <div class="rounded-xl bg-slate-800/60 border border-slate-700 p-8 text-center">
+      <div class="text-3xl mb-4">3</div>
+      <h3 class="text-lg font-semibold text-white mb-2">Download</h3>
+      <p class="text-sm text-slate-400">Receba o arquivo traduzido em segundos apos a confirmacao.</p>
+    </div>
+  </div>
+</section>

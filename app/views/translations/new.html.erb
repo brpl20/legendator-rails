@@ -1,1 +1,47 @@
-<h1>New Translation</h1>
+<div class="max-w-xl mx-auto">
+  <h1 class="text-3xl font-bold text-white mb-2">Nova Traducao</h1>
+  <p class="text-slate-400 mb-8">Envie seu arquivo .srt (max 5MB) e escolha as opcoes de traducao.</p>
+
+  <%= form_with(model: @translation, class: "space-y-6") do |f| %>
+    <% if @translation.errors.any? %>
+      <div class="rounded-lg bg-red-900/50 border border-red-700 px-4 py-3 text-red-200 text-sm">
+        <ul class="list-disc list-inside space-y-1">
+          <% @translation.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= f.label :original_file, "Arquivo SRT", class: "block text-sm font-medium text-slate-300 mb-1" %>
+      <%= f.file_field :original_file,
+          accept: ".srt",
+          class: "block w-full text-sm text-slate-400
+                  file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+                  file:text-sm file:font-semibold file:bg-slate-700 file:text-slate-200
+                  hover:file:bg-slate-600 file:cursor-pointer file:transition" %>
+    </div>
+
+    <div>
+      <%= f.label :target_language, "Idioma de destino", class: "block text-sm font-medium text-slate-300 mb-1" %>
+      <%= f.select :target_language,
+          Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
+          { prompt: "Selecione o idioma" },
+          class: "block w-full rounded-lg bg-slate-800 border border-slate-600 text-slate-200 px-4 py-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500" %>
+    </div>
+
+    <div>
+      <%= f.label :model_used, "Modelo de IA", class: "block text-sm font-medium text-slate-300 mb-1" %>
+      <%= f.select :model_used,
+          Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
+          {},
+          class: "block w-full rounded-lg bg-slate-800 border border-slate-600 text-slate-200 px-4 py-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500" %>
+    </div>
+
+    <div>
+      <%= f.submit "Continuar para pagamento",
+          class: "w-full rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition cursor-pointer" %>
+    </div>
+  <% end %>
+</div>
