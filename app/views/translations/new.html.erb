@@ -1,47 +1,61 @@
 <div class="max-w-xl mx-auto">
-  <h1 class="text-3xl font-bold text-white mb-2">Nova Traducao</h1>
-  <p class="text-slate-400 mb-8">Envie seu arquivo .srt (max 5MB) e escolha as opcoes de traducao.</p>
+  <div class="text-center mb-10">
+    <p class="font-cyber text-xs tracking-widest uppercase mb-2"
+       style="color: var(--toku-gold);">
+      &#x2501;&#x2501; Nova Traducao &#x2501;&#x2501;
+    </p>
+    <h1 class="font-hero text-3xl text-white text-glow-red">Traduzir Legenda</h1>
+    <p class="mt-3 text-base" style="color: var(--toku-silver);">Envie seu arquivo .srt (max 5MB) e escolha as opcoes de traducao.</p>
+  </div>
 
-  <%= form_with(model: @translation, class: "space-y-6") do |f| %>
-    <% if @translation.errors.any? %>
-      <div class="rounded-lg bg-red-900/50 border border-red-700 px-4 py-3 text-red-200 text-sm">
-        <ul class="list-disc list-inside space-y-1">
-          <% @translation.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
+  <div class="toku-card rounded-xl p-8">
+    <%= form_with(model: @translation, class: "space-y-6") do |f| %>
+      <% if @translation.errors.any? %>
+        <div class="rounded-lg px-4 py-3 text-sm" style="background: rgba(225, 29, 72, 0.15); border: 1px solid var(--toku-red); color: #fca5a5;">
+          <ul class="list-disc list-inside space-y-1">
+            <% @translation.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :original_file, "Arquivo SRT", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.file_field :original_file,
+            accept: ".srt",
+            class: "block w-full text-sm cursor-pointer",
+            style: "color: var(--toku-silver);",
+            data: { controller: "" } %>
+        <div class="mt-2 rounded-lg px-4 py-3 text-center cursor-pointer transition"
+             style="border: 2px dashed rgba(124, 58, 237, 0.4); background: rgba(124, 58, 237, 0.05);"
+             onclick="this.previousElementSibling.click()">
+          <p class="text-sm" style="color: var(--toku-silver);">Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code></p>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :target_language, "Idioma de destino", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.select :target_language,
+            Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
+            { prompt: "Selecione o idioma" },
+            class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
+            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+      </div>
+
+      <div>
+        <%= f.label :model_used, "Modelo de IA", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.select :model_used,
+            Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
+            {},
+            class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
+            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+      </div>
+
+      <div class="pt-2">
+        <%= f.submit "Continuar para pagamento",
+            class: "toku-btn-primary w-full rounded-lg px-6 py-3 text-base font-tokusatsu text-white tracking-wider uppercase cursor-pointer" %>
       </div>
     <% end %>
-
-    <div>
-      <%= f.label :original_file, "Arquivo SRT", class: "block text-sm font-medium text-slate-300 mb-1" %>
-      <%= f.file_field :original_file,
-          accept: ".srt",
-          class: "block w-full text-sm text-slate-400
-                  file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
-                  file:text-sm file:font-semibold file:bg-slate-700 file:text-slate-200
-                  hover:file:bg-slate-600 file:cursor-pointer file:transition" %>
-    </div>
-
-    <div>
-      <%= f.label :target_language, "Idioma de destino", class: "block text-sm font-medium text-slate-300 mb-1" %>
-      <%= f.select :target_language,
-          Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
-          { prompt: "Selecione o idioma" },
-          class: "block w-full rounded-lg bg-slate-800 border border-slate-600 text-slate-200 px-4 py-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500" %>
-    </div>
-
-    <div>
-      <%= f.label :model_used, "Modelo de IA", class: "block text-sm font-medium text-slate-300 mb-1" %>
-      <%= f.select :model_used,
-          Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
-          {},
-          class: "block w-full rounded-lg bg-slate-800 border border-slate-600 text-slate-200 px-4 py-2.5 text-sm focus:ring-emerald-500 focus:border-emerald-500" %>
-    </div>
-
-    <div>
-      <%= f.submit "Continuar para pagamento",
-          class: "w-full rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition cursor-pointer" %>
-    </div>
-  <% end %>
+  </div>
 </div>
