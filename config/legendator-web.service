@@ -1,0 +1,21 @@
+[Unit]
+Description=Legendator Rails Web (Thruster + Puma)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=brpl
+WorkingDirectory=/home/brpl/legendator-rails
+Environment=RAILS_ENV=production
+Environment=SOLID_QUEUE_IN_PUMA=1
+EnvironmentFile=/home/brpl/legendator-rails/.env
+ExecStart=/usr/local/rvm/gems/ruby-3.4.4/bin/bundle exec thrust puma -C config/puma.rb
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=legendator-web
+
+[Install]
+WantedBy=multi-user.target
