@@ -3,8 +3,8 @@ class CostCalculator
     "openai/gpt-4.1-mini"        => { input: 0.40,  output: 1.60 },
     "google/gemini-2.5-flash"    => { input: 0.30,  output: 2.50 },
     "openai/gpt-4.1"             => { input: 2.00,  output: 8.00 },
-    "anthropic/claude-sonnet-4.5" => { input: 3.00,  output: 15.00 },
-    "anthropic/claude-haiku-4.5" => { input: 1.00,  output: 5.00 }
+    "deepseek-ai/deepseek-chat"  => { input: 0.14,  output: 0.28 },
+    "qwen/qwen3.5-9b"           => { input: 0.05,  output: 0.15 }
   }.freeze
 
   def initialize(model: "openai/gpt-4.1-mini")

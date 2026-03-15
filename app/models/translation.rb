@@ -35,8 +35,8 @@ class Translation < ApplicationRecord
     "openai/gpt-4.1-mini"        => "GPT-4.1 Mini (padrao)",
     "google/gemini-2.5-flash"    => "Gemini Flash (rapido)",
     "openai/gpt-4.1"             => "GPT-4.1 (premium)",
-    "anthropic/claude-sonnet-4.5" => "Claude Sonnet 4.5 (premium)",
-    "anthropic/claude-haiku-4.5" => "Claude Haiku (premium rapido)"
+    "deepseek-ai/deepseek-chat"  => "DeepSeek V3 (economico)",
+    "qwen/qwen3.5-9b"           => "Qwen 3.5 (ultra economico)"
   }.freeze
 
   def to_param

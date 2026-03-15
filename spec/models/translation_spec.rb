@@ -63,7 +63,7 @@ RSpec.describe Translation, type: :model do
 
     it "has 5 available models" do
       expect(Translation::AVAILABLE_MODELS.size).to eq(5)
-      expect(Translation::AVAILABLE_MODELS.keys).to include("gpt-4.1-mini", "gpt-4.1")
+      expect(Translation::AVAILABLE_MODELS.keys).to include("openai/gpt-4.1-mini", "openai/gpt-4.1")
     end
   end
 end
