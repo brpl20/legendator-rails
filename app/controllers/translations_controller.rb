@@ -49,6 +49,20 @@ class TranslationsController < ApplicationController
     end
   end
 
+  def simulate_payment
+    raise ActionController::RoutingError, "Not Found" unless Rails.env.development? || Rails.env.test?
+
+    translation = find_translation!
+    if translation.pending_payment? && translation.payment
+      translation.payment.update!(status: :confirmed, paid_at: Time.current)
+      translation.paid!
+      TranslateSubtitleJob.perform_later(translation.id)
+      redirect_to translation, notice: "Pagamento simulado com sucesso!"
+    else
+      redirect_to translation, alert: "Nao foi possivel simular o pagamento."
+    end
+  end
+
   private
 
   def translation_params

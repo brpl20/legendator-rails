@@ -36,3 +36,7 @@
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+
+# Banco Inter certificates and secrets
+/inter/
+.DS_Store

@@ -41,6 +41,14 @@
       </div>
     <% end %>
 
+    <% if Rails.env.development? %>
+      <div class="mt-6 text-center">
+        <%= button_to "Simular Pagamento (DEV)", simulate_payment_path(@translation),
+            class: "toku-btn-primary inline-block rounded-lg px-6 py-2 text-sm font-semibold text-white tracking-wider uppercase cursor-pointer",
+            data: { turbo_confirm: "Simular pagamento de R$ #{"%.2f" % @translation.cost_brl}?" } %>
+      </div>
+    <% end %>
+
   <% elsif @translation.paid? || @translation.processing? %>
     <div class="text-center py-12">
       <div class="inline-block w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin mb-6"></div>

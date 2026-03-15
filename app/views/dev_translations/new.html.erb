@@ -1,15 +1,15 @@
 <div class="max-w-xl mx-auto">
   <div class="text-center mb-10">
     <p class="font-cyber text-xs tracking-widest uppercase mb-2"
-       style="color: var(--toku-gold);">
-      &#x2501;&#x2501; Nova Traducao &#x2501;&#x2501;
+       style="color: var(--toku-red);">
+      &#x2501;&#x2501; DEV MODE &#x2501;&#x2501;
     </p>
-    <h1 class="font-hero text-3xl text-white text-glow-red">Traduzir Legenda</h1>
-    <p class="mt-3 text-base" style="color: var(--toku-silver);">Envie seu arquivo .srt (max 5MB) e escolha as opcoes de traducao.</p>
+    <h1 class="font-hero text-3xl text-white text-glow-red">Traduzir Legenda (Dev)</h1>
+    <p class="mt-3 text-base" style="color: var(--toku-silver);">Dispara a API real sem pagamento. Somente em development.</p>
   </div>
 
   <div class="toku-card rounded-xl p-8">
-    <%= form_with(model: @translation, class: "space-y-6", id: "translation-form") do |f| %>
+    <%= form_with(model: @translation, url: dev_translation_path, method: :post, class: "space-y-6") do |f| %>
       <% if @translation.errors.any? %>
         <div class="rounded-lg px-4 py-3 text-sm" style="background: rgba(225, 29, 72, 0.15); border: 1px solid var(--toku-red); color: #fca5a5;">
           <ul class="list-disc list-inside space-y-1">
@@ -25,12 +25,11 @@
         <%= f.file_field :original_file,
             accept: ".srt",
             id: "file-input",
-            class: "hidden",
-            style: "color: var(--toku-silver);" %>
+            class: "hidden" %>
         <div id="file-drop-zone" class="mt-2 rounded-lg px-4 py-3 text-center cursor-pointer transition"
-             style="border: 2px dashed rgba(124, 58, 237, 0.4); background: rgba(124, 58, 237, 0.05);"
+             style="border: 2px dashed rgba(225, 29, 72, 0.4); background: rgba(225, 29, 72, 0.05);"
              onclick="document.getElementById('file-input').click()">
-          <p id="file-drop-text" class="text-sm" style="color: var(--toku-silver);">Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code></p>
+          <p id="file-drop-text" class="text-sm" style="color: var(--toku-silver);">Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(225, 29, 72, 0.2); color: var(--toku-gold);">.srt</code></p>
         </div>
       </div>
 
@@ -40,7 +39,7 @@
             Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
             { prompt: "Selecione o idioma" },
             class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
-            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+            style: "background: var(--toku-dark); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--toku-silver);" %>
       </div>
 
       <div>
@@ -49,14 +48,14 @@
             Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
             {},
             class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
-            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+            style: "background: var(--toku-dark); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--toku-silver);" %>
       </div>
 
       <div class="pt-2">
-        <p id="file-warning" class="text-sm mb-3 text-center" style="color: var(--toku-gold);">
+        <p id="file-warning" class="text-sm mb-3 text-center" style="color: var(--toku-red);">
           Envie um arquivo antes para comecar
         </p>
-        <%= f.submit "Continuar para pagamento",
+        <%= f.submit "Traduzir agora (sem pagamento)",
             id: "submit-btn",
             disabled: true,
             class: "toku-btn-primary w-full rounded-lg px-6 py-3 text-base font-tokusatsu text-white tracking-wider uppercase cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" %>
@@ -83,9 +82,9 @@
       } else {
         submitBtn.disabled = true;
         warning.style.display = "block";
-        dropZone.style.borderColor = "rgba(124, 58, 237, 0.4)";
-        dropZone.style.background = "rgba(124, 58, 237, 0.05)";
-        dropText.innerHTML = 'Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>';
+        dropZone.style.borderColor = "rgba(225, 29, 72, 0.4)";
+        dropZone.style.background = "rgba(225, 29, 72, 0.05)";
+        dropText.innerHTML = 'Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(225, 29, 72, 0.2); color: var(--toku-gold);">.srt</code>';
       }
     });
   });

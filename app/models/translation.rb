@@ -32,11 +32,11 @@ class Translation < ApplicationRecord
   }.freeze
 
   AVAILABLE_MODELS = {
-    "gpt-4.1-mini"               => "GPT-4.1 Mini (padrao)",
-    "gemini-2.5-flash"           => "Gemini Flash (rapido)",
-    "gpt-4.1"                    => "GPT-4.1 (premium)",
-    "claude-sonnet-4-5-20250929" => "Claude Sonnet 4.5 (premium)",
-    "claude-3-5-haiku-20241022"  => "Claude Haiku (premium rapido)"
+    "openai/gpt-4.1-mini"        => "GPT-4.1 Mini (padrao)",
+    "google/gemini-2.5-flash"    => "Gemini Flash (rapido)",
+    "openai/gpt-4.1"             => "GPT-4.1 (premium)",
+    "anthropic/claude-sonnet-4.5" => "Claude Sonnet 4.5 (premium)",
+    "anthropic/claude-haiku-4.5" => "Claude Haiku (premium rapido)"
   }.freeze
 
   def to_param

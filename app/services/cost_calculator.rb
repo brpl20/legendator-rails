@@ -1,15 +1,15 @@
 class CostCalculator
   MODEL_PRICING = {
-    "gpt-4.1-mini"               => { input: 0.40,  output: 1.60 },
-    "gemini-2.5-flash"           => { input: 0.15,  output: 0.60 },
-    "gpt-4.1"                    => { input: 2.00,  output: 8.00 },
-    "claude-sonnet-4-5-20250929" => { input: 3.00,  output: 15.00 },
-    "claude-3-5-haiku-20241022"  => { input: 0.80,  output: 4.00 }
+    "openai/gpt-4.1-mini"        => { input: 0.40,  output: 1.60 },
+    "google/gemini-2.5-flash"    => { input: 0.30,  output: 2.50 },
+    "openai/gpt-4.1"             => { input: 2.00,  output: 8.00 },
+    "anthropic/claude-sonnet-4.5" => { input: 3.00,  output: 15.00 },
+    "anthropic/claude-haiku-4.5" => { input: 1.00,  output: 5.00 }
   }.freeze
 
-  def initialize(model: "gpt-4.1-mini")
+  def initialize(model: "openai/gpt-4.1-mini")
     @model = model
-    @pricing = MODEL_PRICING[@model] || MODEL_PRICING["gpt-4.1-mini"]
+    @pricing = MODEL_PRICING[@model] || MODEL_PRICING["openai/gpt-4.1-mini"]
     @markup_percentage = Rails.application.credentials.dig(:pricing, :markup_percentage) || 200
     @financial_markup = Rails.application.credentials.dig(:pricing, :financial_markup) || 10
     @minimum_brl = Rails.application.credentials.dig(:pricing, :minimum_brl) || 2.00
