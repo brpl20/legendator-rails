@@ -27,12 +27,15 @@ echo "==> Restarting app..."
 sudo systemctl restart legendator-web
 
 echo "==> Waiting for app to boot..."
-sleep 5
-
-if curl -sf -o /dev/null -w "%{http_code}" http://localhost:3001/ | grep -q "200\|301\|302"; then
-  echo "==> Deploy OK! App is online."
-else
-  echo "==> WARNING: Health check failed. Check logs:"
-  echo "    sudo journalctl -u legendator-web -n 50 --no-pager"
-  exit 1
-fi
+for i in 1 2 3 4 5 6; do
+  sleep 3
+  HTTP_CODE=$(curl -so /dev/null -w "%{http_code}" http://localhost:3001/ 2>/dev/null || true)
+  if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+    echo "==> Deploy OK! App is online (HTTP $HTTP_CODE)."
+    exit 0
+  fi
+  echo "    Attempt $i: HTTP $HTTP_CODE, retrying..."
+done
+echo "==> WARNING: Health check failed. Check logs:"
+echo "    sudo journalctl -u legendator-web -n 50 --no-pager"
+exit 1
