@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # Legendator Rails — Deploy Script (run on server)
 # Usage: bash ~/legendator-rails/script/deploy.sh
-set -euo pipefail
+set -eo pipefail
 
 APP_DIR="/home/brpl/legendator-rails"
 cd "${APP_DIR}"
 
-source /usr/local/rvm/scripts/rvm
+export PATH="/usr/local/rvm/rubies/ruby-3.4.4/bin:/usr/local/rvm/gems/ruby-3.4.4/bin:$PATH"
+export GEM_HOME="/usr/local/rvm/gems/ruby-3.4.4"
+export GEM_PATH="/usr/local/rvm/gems/ruby-3.4.4:/usr/local/rvm/gems/ruby-3.4.4@global"
 
 echo "==> Pulling latest code..."
 git pull origin main
