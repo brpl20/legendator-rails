@@ -49,6 +49,9 @@ class PixService
     payment.translation.paid!
     TranslateSubtitleJob.perform_later(payment.translation.id)
     true
+  rescue => e
+    Rails.logger.warn("[PixService] check_payment failed: #{e.message}")
+    false
   end
 
   def confirm_payment(pix_data)
@@ -88,27 +91,29 @@ class PixService
   end
 
   def fetch_access_token
-    uri = URI("#{@base_url}#{OAUTH_PATH}")
+    Rails.cache.fetch("inter_oauth_token", expires_in: 50.minutes) do
+      uri = URI("#{@base_url}#{OAUTH_PATH}")
 
-    http = build_mtls_http(uri)
-    request = Net::HTTP::Post.new(uri)
-    request["Content-Type"] = "application/x-www-form-urlencoded"
-    request.body = URI.encode_www_form(
-      client_id: @client_id,
-      client_secret: @client_secret,
-      scope: "cob.write cob.read pix.read",
-      grant_type: "client_credentials"
-    )
+      http = build_mtls_http(uri)
+      request = Net::HTTP::Post.new(uri)
+      request["Content-Type"] = "application/x-www-form-urlencoded"
+      request.body = URI.encode_www_form(
+        client_id: @client_id,
+        client_secret: @client_secret,
+        scope: "cob.write cob.read pix.read",
+        grant_type: "client_credentials"
+      )
 
-    response = http.request(request)
-    body = response.body.force_encoding("UTF-8")
+      response = http.request(request)
+      body = response.body.force_encoding("UTF-8")
 
-    unless response.is_a?(Net::HTTPSuccess)
-      Rails.logger.error("[PixService] OAuth failed: #{response.code} - #{body}")
-      raise "Inter OAuth error: #{response.code} - #{body}"
+      unless response.is_a?(Net::HTTPSuccess)
+        Rails.logger.error("[PixService] OAuth failed: #{response.code} - #{body}")
+        raise "Inter OAuth error: #{response.code} - #{body}"
+      end
+
+      JSON.parse(body)["access_token"]
     end
-
-    JSON.parse(body)["access_token"]
   end
 
   def fetch_cobranca(txid)
