@@ -39,4 +39,4 @@ jobs:
 
       - name: Run deploy script
         run: |
-          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/legendator-rails/script/deploy.sh"
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash -l ~/legendator-rails/script/deploy.sh"
