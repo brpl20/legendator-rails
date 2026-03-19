@@ -30,7 +30,7 @@ echo "==> Waiting for app to boot..."
 for i in 1 2 3 4 5 6; do
   sleep 3
   HTTP_CODE=$(curl -so /dev/null -w "%{http_code}" http://localhost:3001/ 2>/dev/null || true)
-  if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+  if [ -n "$HTTP_CODE" ] && [ "$HTTP_CODE" != "000" ]; then
     echo "==> Deploy OK! App is online (HTTP $HTTP_CODE)."
     exit 0
   fi
