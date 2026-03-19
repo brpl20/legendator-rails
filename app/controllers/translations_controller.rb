@@ -22,6 +22,11 @@ class TranslationsController < ApplicationController
 
   def show
     @translation = find_translation!
+
+    if @translation.pending_payment? && @translation.payment&.pending?
+      PixService.new.check_payment(@translation.payment)
+      @translation.reload
+    end
   end
 
   def download

@@ -3,11 +3,20 @@ require "rails_helper"
 RSpec.describe PixService do
   let(:translation) { create(:translation, cost_user: 5.00) }
 
+  before do
+    ENV["INTER_BASE_URL"] ||= "https://cdpj.partners.bancointer.com.br"
+    ENV["INTER_CLIENT_ID"] ||= "test-client-id"
+    ENV["INTER_CLIENT_SECRET"] ||= "test-client-secret"
+    ENV["INTER_CHAVE_PIX"] ||= "test-chave-pix"
+    ENV["INTER_CERT_PATH"] ||= "inter/Inter API_Certificado.crt"
+    ENV["INTER_KEY_PATH"] ||= "inter/Inter API_Chave.key"
+  end
+
   describe "#create_charge" do
     it "creates a payment record for the translation" do
       service = PixService.new
-      allow(service).to receive(:call_banco_inter_api).and_return({
-        "txid" => "LEG12345678",
+      allow(service).to receive(:create_pix_cobranca).and_return({
+        "txid" => "LEG12345678901234567890abcde",
         "pixCopiaECola" => "00020126...",
         "qrCode" => "base64encodedqr..."
       })
@@ -24,11 +33,11 @@ RSpec.describe PixService do
 
   describe "#confirm_payment" do
     it "marks payment as confirmed and enqueues translation job" do
-      payment = create(:payment, translation: translation, pix_txid: "LEGTESTTOKEN123")
+      payment = create(:payment, translation: translation, pix_txid: "LEGTESTTOKEN12345678901234567")
       service = PixService.new
 
       expect {
-        result = service.confirm_payment(txid: "LEGTESTTOKEN123")
+        result = service.confirm_payment(txid: "LEGTESTTOKEN12345678901234567")
         expect(result).to be true
       }.to have_enqueued_job(TranslateSubtitleJob).with(translation.id)
 

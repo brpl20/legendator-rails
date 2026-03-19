@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Legendator Rails — Deploy Script (run for updates)
-# Usage: cd /var/www/legendator && bash script/deploy.sh
+# Legendator Rails — Deploy Script (run on server)
+# Usage: bash ~/legendator-rails/script/deploy.sh
 set -euo pipefail
 
-APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+APP_DIR="/home/brpl/legendator-rails"
 cd "${APP_DIR}"
+
+source /usr/local/rvm/scripts/rvm
 
 echo "==> Pulling latest code..."
 git pull origin main
@@ -22,11 +24,12 @@ echo "==> Restarting app..."
 sudo systemctl restart legendator-web
 
 echo "==> Waiting for app to boot..."
-sleep 3
+sleep 5
 
-if curl -sf http://localhost:3000/up > /dev/null 2>&1; then
-  echo "==> Deploy concluído! App está online."
+if curl -sf http://localhost:3001/up > /dev/null 2>&1; then
+  echo "==> Deploy OK! App is online."
 else
-  echo "==> AVISO: Health check falhou. Verifique os logs:"
+  echo "==> WARNING: Health check failed. Check logs:"
   echo "    sudo journalctl -u legendator-web -n 50 --no-pager"
+  exit 1
 fi

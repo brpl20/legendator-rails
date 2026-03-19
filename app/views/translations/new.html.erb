@@ -66,14 +66,16 @@
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
+  (function() {
     const fileInput = document.getElementById("file-input");
     const submitBtn = document.getElementById("submit-btn");
     const warning = document.getElementById("file-warning");
     const dropZone = document.getElementById("file-drop-zone");
     const dropText = document.getElementById("file-drop-text");
 
-    fileInput.addEventListener("change", function() {
+    if (!fileInput || !submitBtn) return;
+
+    function updateUI() {
       if (fileInput.files.length > 0) {
         submitBtn.disabled = false;
         warning.style.display = "none";
@@ -87,6 +89,30 @@
         dropZone.style.background = "rgba(124, 58, 237, 0.05)";
         dropText.innerHTML = 'Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>';
       }
+    }
+
+    fileInput.addEventListener("change", updateUI);
+
+    dropZone.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      dropZone.style.borderColor = "var(--toku-gold)";
+      dropZone.style.background = "rgba(245, 158, 11, 0.12)";
     });
-  });
+
+    dropZone.addEventListener("dragleave", function(e) {
+      e.preventDefault();
+      if (!fileInput.files.length) {
+        dropZone.style.borderColor = "rgba(124, 58, 237, 0.4)";
+        dropZone.style.background = "rgba(124, 58, 237, 0.05)";
+      }
+    });
+
+    dropZone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      if (e.dataTransfer.files.length > 0) {
+        fileInput.files = e.dataTransfer.files;
+        updateUI();
+      }
+    });
+  })();
 </script>

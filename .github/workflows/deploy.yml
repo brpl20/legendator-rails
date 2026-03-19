@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy Inter certificates
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          $SSH "mkdir -p ~/legendator-rails/inter"
+          echo "${{ secrets.INTER_CERT_B64 }}" | base64 -d | $SSH "cat > ~/legendator-rails/inter/Inter_API_Certificado.crt"
+          echo "${{ secrets.INTER_KEY_B64 }}" | base64 -d | $SSH "cat > ~/legendator-rails/inter/Inter_API_Chave.key"
+          $SSH "chmod 600 ~/legendator-rails/inter/Inter_API_Chave.key"
+
+      - name: Update production .env
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}"
+          ENV_CONTENT="RAILS_ENV=production
+          PORT=3001
+          RAILS_MASTER_KEY=${{ secrets.RAILS_MASTER_KEY }}
+          INTER_CLIENT_ID=${{ secrets.INTER_CLIENT_ID }}
+          INTER_CLIENT_SECRET=${{ secrets.INTER_CLIENT_SECRET }}
+          INTER_CHAVE_PIX=${{ secrets.INTER_CHAVE_PIX }}
+          INTER_CERT_PATH=inter/Inter_API_Certificado.crt
+          INTER_KEY_PATH=inter/Inter_API_Chave.key
+          INTER_BASE_URL=https://cdpj.partners.bancointer.com.br"
+          echo "$ENV_CONTENT" | sed 's/^[[:space:]]*//' | $SSH "cat > ~/legendator-rails/.env"
+
+      - name: Run deploy script
+        run: |
+          ssh -i ~/.ssh/deploy_key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "bash ~/legendator-rails/script/deploy.sh"

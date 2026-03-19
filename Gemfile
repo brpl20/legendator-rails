@@ -45,6 +45,12 @@ gem "image_processing", "~> 1.2"
 # Translation engine
 gem "legendator", git: "https://github.com/brpl20/legendator-gem"
 
+# Load environment variables from .env
+gem "dotenv-rails"
+
+# QR code generation for PIX
+gem "rqrcode"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
