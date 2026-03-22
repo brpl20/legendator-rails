@@ -15,6 +15,14 @@ class TranslateSubtitleJob < ApplicationJob
       model: translation.model_used
     )
 
+    if result.consistency && !result.consistency.pass?
+      translation.update!(
+        status: :failed,
+        error_message: "Consistency check failed: #{result.consistency.errors.join('; ')}"
+      )
+      return
+    end
+
     costs = CostCalculator.new(model: translation.model_used).calculate(
       result.cost,
       input_tokens: result.token_usage[:input_tokens],
