@@ -17,7 +17,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Dela+Gothic+One&family=Zen+Dots&family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -25,7 +25,7 @@
     <style>
       :root {
         --toku-red: #e11d48;
-        --toku-gold: #f59e0b;
+        --toku-gold: #FEBB12;
         --toku-silver: #cbd5e1;
         --toku-dark: #0c0a1a;
         --toku-dark-mid: #1a1033;
@@ -33,12 +33,9 @@
         --toku-blue: #2563eb;
       }
 
-      .font-tokusatsu { font-family: 'Black Han Sans', sans-serif; }
-      .font-hero { font-family: 'Dela Gothic One', sans-serif; }
-      .font-cyber { font-family: 'Zen Dots', sans-serif; }
-      .font-body { font-family: 'Sawarabi Gothic', sans-serif; }
 
       body.toku-body {
+        font-family: 'Rajdhani', sans-serif;
         background: var(--toku-dark);
         background-image:
           radial-gradient(ellipse at 20% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
@@ -163,7 +160,7 @@
 
       /* Step number styling */
       .step-number {
-        font-family: 'Black Han Sans', sans-serif;
+        font-family: 'Press Start 2P', cursive;
         font-size: 3.5rem;
         line-height: 1;
         background: linear-gradient(180deg, var(--toku-gold) 0%, var(--toku-red) 100%);
@@ -176,39 +173,26 @@
       /* CTA button */
       .toku-btn-primary {
         position: relative;
-        background: linear-gradient(135deg, var(--toku-red) 0%, #be123c 100%);
+        background: #D90E3D;
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 0 20px rgba(225, 29, 72, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        box-shadow: 0 0 40px rgba(217, 14, 61, 0.5);
       }
       .toku-btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 30px rgba(225, 29, 72, 0.5), 0 8px 25px rgba(0,0,0,0.3);
-      }
-      .toku-btn-primary::before {
-        content: '';
-        position: absolute;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
-        animation: sheen 3s ease-in-out infinite;
-      }
-      @keyframes sheen {
-        0%, 100% { transform: translateX(-100%) rotate(45deg); }
-        50% { transform: translateX(100%) rotate(45deg); }
+        background: #c00c36;
       }
 
       .toku-btn-secondary {
-        border: 1px solid rgba(245, 158, 11, 0.5);
+        border: 1px solid var(--toku-dark);
         color: var(--toku-gold);
+        background: #0c0a1a66;
         transition: all 0.3s ease;
         position: relative;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
       }
       .toku-btn-secondary:hover {
-        background: rgba(245, 158, 11, 0.1);
-        border-color: var(--toku-gold);
-        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
-        transform: translateY(-2px);
+        background: #0c0a1a42;
+        color: var(--toku-gold);
       }
 
       /* Entrance animations */
@@ -273,7 +257,6 @@
         backdrop-filter: blur(12px);
       }
       .toku-nav-brand {
-        font-family: 'Dela Gothic One', sans-serif;
         background: linear-gradient(135deg, var(--toku-gold), #fbbf24, var(--toku-gold));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -283,13 +266,13 @@
     </style>
   </head>
 
-  <body class="min-h-full toku-body text-slate-100 antialiased font-body">
+  <body class="min-h-full toku-body text-slate-100 antialiased">
     <nav class="toku-nav">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
         <%= link_to root_path, class: "toku-nav-brand text-xl tracking-wider hover:opacity-80 transition" do %>
           LEGENDATOR
         <% end %>
-        <%= link_to "TRADUZIR", new_translation_path, class: "text-xl font-medium text-slate-300 hover:text-white transition tracking-wider uppercase", style: "font-family: 'Dela Gothic One', sans-serif;" %>
+        <%= link_to "TRADUZIR", new_translation_path, class: "text-xl font-medium text-slate-300 hover:text-white transition tracking-wider uppercase", style: "" %>
       </div>
     </nav>
 
