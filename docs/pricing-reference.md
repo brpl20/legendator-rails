@@ -39,20 +39,20 @@ Fórmula do `CostCalculator`:
 
 ```
 custo_brl = custo_usd * taxa_cambio * 1.10 (markup financeiro) * 3.00 (markup negócio 200%)
-minimo = R$ 2.00
+minimo = R$ 1.00
 ```
 
 Com câmbio a R$ 5.50:
 
 | Modelo                | Episódio (BRL) | Filme normal (BRL) | Filme longo (BRL) |
 |-----------------------|----------------|--------------------|--------------------|
-| GPT-4.1 Mini          | R$ 2.00*       | R$ 2.00*           | R$ 2.73           |
-| Gemini 2.5 Flash      | R$ 2.00*       | R$ 3.09            | R$ 4.90           |
-| Claude Haiku 4.5      | R$ 2.00*       | R$ 7.09            | R$ 11.08          |
+| GPT-4.1 Mini          | R$ 1.00*       | R$ 1.00*           | R$ 2.73           |
+| Gemini 2.5 Flash      | R$ 1.00*       | R$ 3.09            | R$ 4.90           |
+| Claude Haiku 4.5      | R$ 1.00*       | R$ 7.09            | R$ 11.08          |
 | Claude Sonnet 4.5     | R$ 2.55        | R$ 21.61           | R$ 33.78          |
-| GPT-4.1               | R$ 2.00*       | R$ 8.54            | R$ 13.26          |
+| GPT-4.1               | R$ 1.00*       | R$ 8.54            | R$ 13.26          |
 
-> *Valores abaixo do mínimo de R$ 2.00 são arredondados para cima.
+> *Valores abaixo do mínimo de R$ 1.00 são arredondados para cima.
 
 ## Referência de tokens por tipo de conteúdo
 
