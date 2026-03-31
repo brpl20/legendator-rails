@@ -8,11 +8,16 @@ RSpec.describe "Translation flow", type: :request do
       estimated_tokens: { input: 100, output: 100, total: 200 }
     })
     allow_any_instance_of(CostCalculator).to receive(:fetch_exchange_rate).and_return(5.50)
-    allow_any_instance_of(PixService).to receive(:call_banco_inter_api).and_return({
-      "txid" => "LEGINTEGRATION1",
-      "pixCopiaECola" => "pix-code-here",
-      "qrCode" => "qr-base64-here"
-    })
+    allow_any_instance_of(PixService).to receive(:create_charge).and_wrap_original do |_method, translation|
+      translation.create_payment!(
+        pix_txid: "LEG#{translation.access_token}#{Time.current.to_i}".gsub(/[^a-zA-Z0-9]/, "").ljust(26, "A")[0, 35],
+        pix_copia_e_cola: "pix-code-here",
+        pix_qr_code_base64: "fake-qr-base64",
+        amount_brl: translation.cost_brl,
+        status: :pending,
+        expires_at: 1.hour.from_now
+      )
+    end
   end
 
   it "completes the full upload -> payment -> translation -> download flow" do
@@ -32,7 +37,7 @@ RSpec.describe "Translation flow", type: :request do
 
     translation = Translation.last
     expect(translation).to be_pending_payment
-    expect(translation.cost_user).to be >= 2.00
+    expect(translation.cost_user).to be >= 1.00
     expect(translation.payment).to be_present
 
     # 2. Show page with payment info
@@ -47,11 +52,13 @@ RSpec.describe "Translation flow", type: :request do
 
     # 4. Simulate job execution
     require "ostruct"
+    fake_consistency = OpenStruct.new(pass?: true, errors: [])
     fake_result = OpenStruct.new(
       srt_content: "1\n00:00:01,000 --> 00:00:04,000\nOla mundo\n",
       token_usage: { input_tokens: 100, output_tokens: 80, total_tokens: 180 },
       coverage: { total_subtitles: 1, translated: 1, coverage_percent: 100.0 },
-      cost: 0.001
+      cost: 0.001,
+      consistency: fake_consistency
     )
     allow(Legendator).to receive(:translate_content).and_return(fake_result)
     allow_any_instance_of(CostCalculator).to receive(:calculate).and_return(

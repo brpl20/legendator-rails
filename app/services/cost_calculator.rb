@@ -12,7 +12,7 @@ class CostCalculator
     @pricing = MODEL_PRICING[@model] || MODEL_PRICING["openai/gpt-4.1-mini"]
     @markup_percentage = Rails.application.credentials.dig(:pricing, :markup_percentage) || 200
     @financial_markup = Rails.application.credentials.dig(:pricing, :financial_markup) || 10
-    @minimum_brl = Rails.application.credentials.dig(:pricing, :minimum_brl) || 2.00
+    @minimum_brl = Rails.application.credentials.dig(:pricing, :minimum_brl) || 1.00
     @fallback_rate = Rails.application.credentials.dig(:pricing, :fallback_exchange_rate) || 5.50
   end
 
@@ -74,8 +74,15 @@ class CostCalculator
 
   def fetch_rate_from_api
     uri = URI("https://economia.awesomeapi.com.br/json/last/USD-BRL")
-    response = Net::HTTP.get(uri)
-    data = JSON.parse(response)
-    data.dig("USDBRL", "bid").to_f
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    http.open_timeout = 5
+    http.read_timeout = 5
+    request = Net::HTTP::Get.new(uri)
+    response = http.request(request)
+    data = JSON.parse(response.body)
+    rate = data.dig("USDBRL", "bid").to_f
+    raise "Invalid exchange rate: #{rate}" if rate <= 0
+    rate
   end
 end

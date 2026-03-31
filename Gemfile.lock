@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/brpl20/legendator-gem
-  revision: 331f3a768db433bdace5c42095a70abc81445cf5
+  revision: ad66ab59f4e47d3c5ab0a6369736039c383ed966
   specs:
     legendator (0.1.0)
       net-http

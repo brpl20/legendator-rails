@@ -16,10 +16,10 @@ RSpec.describe CostCalculator do
       result = calculator.estimate("fake srt content")
 
       expect(result[:cost_user_brl]).to be_a(Numeric)
-      expect(result[:cost_user_brl]).to be >= 2.00
+      expect(result[:cost_user_brl]).to be >= 1.00
     end
 
-    it "enforces minimum R$ 2.00" do
+    it "enforces minimum R$ 1.00" do
       dry_run_result = {
         subtitles: 1,
         chunks: { total_chunks: 1 },
@@ -31,7 +31,7 @@ RSpec.describe CostCalculator do
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.estimate("tiny srt")
-      expect(result[:cost_user_brl]).to eq(2.00)
+      expect(result[:cost_user_brl]).to eq(1.00)
     end
   end
 
@@ -41,7 +41,7 @@ RSpec.describe CostCalculator do
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.calculate(0.01)
-      expect(result[:cost_brl]).to eq(2.00)
+      expect(result[:cost_brl]).to eq(1.00)
     end
 
     it "calculates correctly for larger amounts" do
@@ -58,7 +58,7 @@ RSpec.describe CostCalculator do
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.calculate(0.0, input_tokens: 5000, output_tokens: 5000)
-      expect(result[:cost_brl]).to be >= 2.00
+      expect(result[:cost_brl]).to be >= 1.00
       expect(result[:fallback]).to be true
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe CostCalculator do
   describe "#fetch_exchange_rate" do
     it "returns fallback rate when API fails" do
       calculator = CostCalculator.new(model: "gpt-4.1-mini")
-      allow(Net::HTTP).to receive(:get).and_raise(StandardError)
+      allow(calculator).to receive(:fetch_rate_from_api).and_raise(StandardError)
 
       rate = calculator.send(:fetch_exchange_rate)
       expect(rate).to eq(5.50)

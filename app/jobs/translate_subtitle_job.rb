@@ -1,9 +1,16 @@
 class TranslateSubtitleJob < ApplicationJob
   queue_as :default
 
+  # Retry on transient AI provider failures (after gem-level retries + fallback are exhausted)
+  retry_on Legendator::TranslationError, wait: :polynomially_longer, attempts: 3
+  retry_on Net::OpenTimeout, Net::ReadTimeout, wait: 30.seconds, attempts: 3
+
+  # Don't retry on permanent failures
+  discard_on ActiveJob::DeserializationError
+
   def perform(translation_id)
     translation = Translation.find(translation_id)
-    translation.processing!
+    translation.processing! unless translation.processing?
 
     start_time = Time.current
     content = translation.original_file.download
@@ -45,7 +52,11 @@ class TranslateSubtitleJob < ApplicationJob
       cost_ai_brl: costs[:cost_brl],
       processing_time: (Time.current - start_time).to_f
     )
+  rescue Legendator::TranslationError, Net::OpenTimeout, Net::ReadTimeout
+    # Let retry_on handle these — re-raise so ActiveJob sees them
+    raise
   rescue => e
+    Rails.logger.error("[TranslateSubtitleJob] Permanent failure for translation #{translation_id}: #{e.message}")
     translation.update!(status: :failed, error_message: e.message)
   end
 end
