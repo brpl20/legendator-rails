@@ -10,10 +10,11 @@ class CostCalculator
   def initialize(model: "openai/gpt-4.1-mini")
     @model = model
     @pricing = MODEL_PRICING[@model] || MODEL_PRICING["openai/gpt-4.1-mini"]
-    @markup_percentage = Rails.application.credentials.dig(:pricing, :markup_percentage) || 200
-    @financial_markup = Rails.application.credentials.dig(:pricing, :financial_markup) || 10
-    @minimum_brl = Rails.application.credentials.dig(:pricing, :minimum_brl) || 1.00
-    @fallback_rate = Rails.application.credentials.dig(:pricing, :fallback_exchange_rate) || 5.50
+    pricing_config = Rails.application.config_for(:pricing)
+    @markup_percentage = pricing_config.markup_percentage
+    @financial_markup = pricing_config.financial_markup
+    @minimum_brl = pricing_config.minimum_brl
+    @fallback_rate = pricing_config.fallback_exchange_rate
   end
 
   def estimate(srt_content)
