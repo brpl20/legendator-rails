@@ -17,7 +17,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Dela+Gothic+One&family=Zen+Dots&family=Sawarabi+Gothic&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
@@ -25,7 +25,7 @@
     <style>
       :root {
         --toku-red: #e11d48;
-        --toku-gold: #f59e0b;
+        --toku-gold: #FEBB12;
         --toku-silver: #cbd5e1;
         --toku-dark: #0c0a1a;
         --toku-dark-mid: #1a1033;
@@ -33,16 +33,140 @@
         --toku-blue: #2563eb;
       }
 
-      .font-tokusatsu { font-family: 'Black Han Sans', sans-serif; }
-      .font-hero { font-family: 'Dela Gothic One', sans-serif; }
-      .font-cyber { font-family: 'Zen Dots', sans-serif; }
-      .font-body { font-family: 'Sawarabi Gothic', sans-serif; }
 
       body.toku-body {
+        font-family: 'Rajdhani', sans-serif;
         background: var(--toku-dark);
+        overflow-x: hidden;
+      }
+
+      /* Hero section */
+      .hero-section { position: relative; }
+
+      /* Grid texture background */
+      .hero-grid-bg {
+        position: absolute;
+        inset: 0;
         background-image:
-          radial-gradient(ellipse at 20% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 100%, rgba(225, 29, 72, 0.1) 0%, transparent 50%);
+          linear-gradient(rgba(124, 58, 237, 0.07) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(124, 58, 237, 0.07) 1px, transparent 1px);
+        background-size: 60px 60px;
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 70%);
+        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 70%);
+        pointer-events: none;
+      }
+
+      /* Radial glows */
+      .hero-glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        pointer-events: none;
+        opacity: 0.4;
+      }
+      .hero-glow--purple {
+        width: 500px; height: 500px;
+        top: -100px; left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(circle, rgba(124, 58, 237, 0.35), transparent 70%);
+      }
+      .hero-glow--red {
+        width: 350px; height: 350px;
+        bottom: -50px; right: 10%;
+        background: radial-gradient(circle, rgba(225, 29, 72, 0.2), transparent 70%);
+      }
+
+      /* Hero highlight text */
+      .hero-highlight {
+        background: linear-gradient(135deg, var(--toku-gold), #fbbf24);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Hero badges */
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--toku-silver);
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        border-radius: 9999px;
+        background: rgba(124, 58, 237, 0.08);
+      }
+
+      /* Section divider */
+      .section-divider {
+        height: 1px;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.4), var(--toku-gold), rgba(124, 58, 237, 0.4), transparent);
+      }
+
+      /* Section underline */
+      .section-underline {
+        width: 60px;
+        height: 3px;
+        border-radius: 2px;
+        background: linear-gradient(90deg, var(--toku-gold), var(--toku-red));
+      }
+
+      /* Como Funciona - full width breakout */
+      .como-funciona-section {
+        position: relative;
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        background:
+          radial-gradient(ellipse 60% 50% at 20% 50%, rgba(124, 58, 237, 0.08), transparent),
+          radial-gradient(ellipse 60% 50% at 80% 50%, rgba(225, 29, 72, 0.05), transparent),
+          linear-gradient(180deg, rgba(26, 16, 51, 0.6) 0%, rgba(16, 12, 32, 1) 50%, rgba(26, 16, 51, 0.6) 100%);
+      }
+      .como-funciona-section > * {
+        max-width: 64rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Step label */
+      .step-label {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--toku-gold);
+        opacity: 0.6;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Preço section - full width */
+      .preco-section {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        background:
+          radial-gradient(ellipse 50% 60% at 50% 40%, rgba(225, 29, 72, 0.05), transparent),
+          linear-gradient(180deg, rgba(26, 16, 51, 0.4) 0%, rgba(12, 10, 26, 1) 50%, rgba(26, 16, 51, 0.4) 100%);
+      }
+      .preco-section > * {
+        max-width: 64rem;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* Footer */
+      .footer-section {
+        width: 100vw;
+        margin-left: calc(-50vw + 50%);
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
       }
 
       /* Starburst lines background */
@@ -62,56 +186,6 @@
           );
         pointer-events: none;
       }
-
-      /* Speed lines */
-      .speed-lines {
-        position: relative;
-      }
-      .speed-lines::after {
-        content: '';
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background:
-          repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 48%,
-            rgba(245, 158, 11, 0.03) 48%,
-            rgba(245, 158, 11, 0.03) 48.5%,
-            transparent 48.5%,
-            transparent 100%
-          );
-        pointer-events: none;
-      }
-
-      /* Glowing text */
-      .text-glow-red {
-        text-shadow:
-          0 0 10px rgba(225, 29, 72, 0.5),
-          0 0 40px rgba(225, 29, 72, 0.3),
-          0 0 80px rgba(225, 29, 72, 0.1);
-      }
-      .text-glow-gold {
-        text-shadow:
-          0 0 10px rgba(245, 158, 11, 0.6),
-          0 0 30px rgba(245, 158, 11, 0.3);
-      }
-
-      /* Diagonal slash decoration */
-      .slash-decoration {
-        position: relative;
-      }
-      .slash-decoration::before,
-      .slash-decoration::after {
-        content: '';
-        position: absolute;
-        width: 120px;
-        height: 3px;
-        background: linear-gradient(90deg, transparent, var(--toku-red), transparent);
-        top: 50%;
-      }
-      .slash-decoration::before { right: 100%; margin-right: 20px; transform: rotate(-5deg); }
-      .slash-decoration::after { left: 100%; margin-left: 20px; transform: rotate(5deg); }
 
       /* Logo video banner */
       .logo-banner {
@@ -163,8 +237,8 @@
 
       /* Step number styling */
       .step-number {
-        font-family: 'Black Han Sans', sans-serif;
-        font-size: 3.5rem;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.5rem;
         line-height: 1;
         background: linear-gradient(180deg, var(--toku-gold) 0%, var(--toku-red) 100%);
         -webkit-background-clip: text;
@@ -173,44 +247,66 @@
         filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.3));
       }
 
+      /* Icon circle glow */
+      .step-icon-circle {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle, rgba(254, 187, 18, 0.12) 0%, transparent 70%);
+        border: 1px solid rgba(254, 187, 18, 0.25);
+        transition: all 0.3s ease;
+      }
+      .toku-card:hover .step-icon-circle {
+        border-color: rgba(254, 187, 18, 0.5);
+        box-shadow: 0 0 20px rgba(254, 187, 18, 0.15);
+      }
+
+      /* Connector line between steps */
+      .step-connector {
+        position: relative;
+      }
+      .step-connector::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -1rem;
+        width: calc(2rem);
+        height: 2px;
+        background: linear-gradient(90deg, rgba(124, 58, 237, 0.4), rgba(254, 187, 18, 0.3));
+        transform: translateY(-50%);
+      }
+      @media (max-width: 639px) {
+        .step-connector::after { display: none; }
+      }
+
       /* CTA button */
       .toku-btn-primary {
         position: relative;
-        background: linear-gradient(135deg, var(--toku-red) 0%, #be123c 100%);
+        background: #D90E3D;
         overflow: hidden;
         transition: all 0.3s ease;
-        box-shadow: 0 0 20px rgba(225, 29, 72, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+        box-shadow: 0 0 40px rgba(217, 14, 61, 0.5);
       }
       .toku-btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0 30px rgba(225, 29, 72, 0.5), 0 8px 25px rgba(0,0,0,0.3);
-      }
-      .toku-btn-primary::before {
-        content: '';
-        position: absolute;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
-        animation: sheen 3s ease-in-out infinite;
-      }
-      @keyframes sheen {
-        0%, 100% { transform: translateX(-100%) rotate(45deg); }
-        50% { transform: translateX(100%) rotate(45deg); }
+        background: #c00c36;
       }
 
       .toku-btn-secondary {
-        border: 1px solid rgba(245, 158, 11, 0.5);
+        border: 1px solid rgba(254, 187, 18, 0.4);
         color: var(--toku-gold);
-        transition: all 0.3s ease;
+        background: rgba(12, 10, 26, 0.6);
         position: relative;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
       }
       .toku-btn-secondary:hover {
-        background: rgba(245, 158, 11, 0.1);
         border-color: var(--toku-gold);
-        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
-        transform: translateY(-2px);
+        background: rgba(254, 187, 18, 0.08);
+        box-shadow: 0 0 20px rgba(254, 187, 18, 0.15);
       }
-
       /* Entrance animations */
       @keyframes slideUp {
         from { opacity: 0; transform: translateY(40px); }
@@ -268,28 +364,147 @@
 
       /* Nav styling */
       .toku-nav {
-        background: linear-gradient(180deg, rgba(12, 10, 26, 0.95), rgba(12, 10, 26, 0.8));
-        border-bottom: 1px solid rgba(124, 58, 237, 0.2);
-        backdrop-filter: blur(12px);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: linear-gradient(180deg, rgba(12, 10, 26, 0.97), rgba(12, 10, 26, 0.9));
+        border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
       }
       .toku-nav-brand {
-        font-family: 'Dela Gothic One', sans-serif;
+        font-family: 'Orbitron', sans-serif;
+        font-weight: 700;
         background: linear-gradient(135deg, var(--toku-gold), #fbbf24, var(--toku-gold));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
         filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.4));
       }
+      .toku-nav-link {
+        color: var(--toku-silver);
+        position: relative;
+        padding-bottom: 2px;
+        transition: color 0.3s;
+      }
+      .toku-nav-link::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--toku-gold);
+        transition: width 0.3s;
+      }
+      .toku-nav-link:hover {
+        color: #fff;
+      }
+      .toku-nav-link:hover::after {
+        width: 100%;
+      }
+
+      /* Desktop nav links */
+      .nav-desktop { display: flex; }
+
+      /* Mobile hamburger */
+      .nav-hamburger { display: none; cursor: pointer; }
+      .nav-hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--toku-silver);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+      }
+      .nav-hamburger span:nth-child(2) { margin: 5px 0; }
+      .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+      .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+      .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+      /* Mobile menu */
+      .nav-mobile-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: rgba(12, 10, 26, 0.98);
+        border-bottom: 1px solid rgba(124, 58, 237, 0.2);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        padding: 1rem 1.5rem 1.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        animation: slideDown 0.3s ease forwards;
+      }
+      .nav-mobile-menu.open { display: flex; }
+      @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .nav-mobile-menu a {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(124, 58, 237, 0.1);
+      }
+
+      /* CTA in mobile menu */
+      .nav-mobile-cta {
+        margin-top: 0.5rem;
+        text-align: center;
+      }
+
+      /* Hide desktop on mobile */
+      @media (max-width: 639px) {
+        .nav-desktop { display: none; }
+        .nav-hamburger { display: flex; flex-direction: column; gap: 0; }
+        .nav-cta-desktop { display: none; }
+      }
     </style>
   </head>
 
-  <body class="min-h-full toku-body text-slate-100 antialiased font-body">
+  <body class="min-h-full toku-body text-slate-100 antialiased">
     <nav class="toku-nav">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
+        <!-- Brand -->
         <%= link_to root_path, class: "toku-nav-brand text-xl tracking-wider hover:opacity-80 transition" do %>
           LEGENDATOR
         <% end %>
-        <%= link_to "TRADUZIR", new_translation_path, class: "text-xl font-medium text-slate-300 hover:text-white transition tracking-wider uppercase", style: "font-family: 'Dela Gothic One', sans-serif;" %>
+
+        <!-- Desktop links -->
+        <div class="nav-desktop items-center gap-6">
+          <a href="#como-funciona" class="toku-nav-link tracking-wider text-sm font-semibold">Como Funciona</a>
+          <a href="#preco" class="toku-nav-link tracking-wider text-sm font-semibold">Preço</a>
+        </div>
+
+        <!-- Desktop CTA -->
+        <div class="nav-cta-desktop">
+          <%= link_to new_translation_path,
+              class: "group toku-btn-primary inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-bold text-white tracking-wider uppercase" do %>
+            <svg class="mr-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+            Traduzir Agora
+          <% end %>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <div class="nav-hamburger" onclick="this.classList.toggle('active'); document.getElementById('mobileMenu').classList.toggle('open');">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div id="mobileMenu" class="nav-mobile-menu">
+        <a href="#como-funciona" class="toku-nav-link tracking-wider text-lg font-semibold" onclick="document.getElementById('mobileMenu').classList.remove('open'); document.querySelector('.nav-hamburger').classList.remove('active');">Como Funciona</a>
+        <a href="#preco" class="toku-nav-link tracking-wider text-lg font-semibold" onclick="document.getElementById('mobileMenu').classList.remove('open'); document.querySelector('.nav-hamburger').classList.remove('active');">Preço</a>
+        <div class="nav-mobile-cta">
+          <%= link_to new_translation_path,
+              class: "group toku-btn-primary inline-flex items-center justify-center rounded-lg px-6 py-3 text-sm font-bold text-white tracking-wider uppercase w-full" do %>
+            <svg class="mr-2 w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+            Traduzir Agora
+          <% end %>
+        </div>
       </div>
     </nav>
 
