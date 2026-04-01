@@ -8,9 +8,7 @@ class TranslationsController < ApplicationController
     @translation.original_filename = params.dig(:translation, :original_file)&.original_filename
 
     if @translation.save
-      content = @translation.original_file.download
-      estimate = CostCalculator.new(model: @translation.model_used).estimate(content)
-      @translation.update!(cost_user: estimate[:cost_user_brl])
+      @translation.update!(cost_user: 1.00)
 
       PixService.new.create_charge(@translation)
 

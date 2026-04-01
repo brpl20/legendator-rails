@@ -1,7 +1,7 @@
 default: &default
   markup_percentage: 200
   financial_markup: 10
-  minimum_brl: 0.50
+  minimum_brl: 1.00
   fallback_exchange_rate: 5.50
 
 development:
