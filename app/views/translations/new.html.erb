@@ -1,17 +1,32 @@
 <div class="max-w-xl mx-auto">
-  <div class="text-center mb-10">
-    <p class="text-xs tracking-widest uppercase mb-2"
+  <!-- Header -->
+  <div class="text-center mb-12">
+    <div class="flex justify-center mb-5">
+      <div class="step-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m10.5 21 5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 0 1 6-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.69 15.08 3 17.502m9.334-12.138c.896.061 1.785.147 2.666.257m-4.589 8.495a18.023 18.023 0 0 1-3.827-5.802" />
+        </svg>
+      </div>
+    </div>
+    <p class="text-xs tracking-widest uppercase mb-3"
        style="color: var(--toku-gold);">
-      &#x2501;&#x2501; Nova Traducao &#x2501;&#x2501;
+      Nova Tradução
     </p>
-    <h1 class="text-3xl text-white">Traduzir Legenda</h1>
-    <p class="mt-3 text-base" style="color: var(--toku-silver);">Envie seu arquivo .srt (max 5MB) e escolha as opcoes de traducao.</p>
+    <h1 class="text-3xl sm:text-4xl text-white font-bold"
+        style="font-family: 'Orbitron', sans-serif;">Traduzir Legenda</h1>
+    <p class="mt-4 text-base max-w-md mx-auto leading-relaxed" style="color: var(--toku-silver);">
+      Envie seu arquivo <code class="font-mono text-sm px-1.5 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code> (max 5MB) e escolha as opções de tradução.
+    </p>
   </div>
 
-  <div class="toku-card rounded-xl p-8">
-    <%= form_with(model: @translation, class: "space-y-6", id: "translation-form") do |f| %>
+  <!-- Form card -->
+  <div class="toku-card rounded-2xl p-8 sm:p-10">
+    <%= form_with(model: @translation, class: "space-y-7", id: "translation-form") do |f| %>
       <% if @translation.errors.any? %>
-        <div class="rounded-lg px-4 py-3 text-sm" style="background: rgba(225, 29, 72, 0.15); border: 1px solid var(--toku-red); color: #fca5a5;">
+        <div class="rounded-xl px-5 py-4 text-sm flex items-start gap-3" style="background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: #fca5a5;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 flex-shrink-0 mt-0.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
           <ul class="list-disc list-inside space-y-1">
             <% @translation.errors.full_messages.each do |msg| %>
               <li><%= msg %></li>
@@ -20,49 +35,84 @@
         </div>
       <% end %>
 
+      <!-- File upload -->
       <div>
-        <%= f.label :original_file, "Arquivo SRT", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :original_file, class: "flex items-center gap-2 text-sm tracking-wider font-semibold mb-3", style: "color: var(--toku-gold);" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+          </svg>
+          Arquivo SRT
+        <% end %>
         <%= f.file_field :original_file,
             accept: ".srt",
             id: "file-input",
             class: "hidden",
             style: "color: var(--toku-silver);" %>
-        <div id="file-drop-zone" class="mt-2 rounded-lg px-4 py-3 text-center cursor-pointer transition"
-             style="border: 2px dashed rgba(124, 58, 237, 0.4); background: rgba(124, 58, 237, 0.05);"
+        <div id="file-drop-zone" class="rounded-xl py-8 px-4 text-center cursor-pointer transition-all duration-300"
+             style="border: 2px dashed rgba(124, 58, 237, 0.35); background: rgba(124, 58, 237, 0.04);"
              onclick="document.getElementById('file-input').click()">
-          <p id="file-drop-text" class="text-sm" style="color: var(--toku-silver);">Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code></p>
+          <div id="file-drop-icon" class="flex justify-center mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10" style="color: rgba(124, 58, 237, 0.4);">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+            </svg>
+          </div>
+          <p id="file-drop-text" class="text-sm" style="color: var(--toku-silver);">
+            Clique ou arraste seu arquivo <code class="font-mono text-xs px-1.5 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>
+          </p>
+          <p class="text-xs mt-2" style="color: rgba(203, 213, 225, 0.4);">Tamanho máximo: 5MB</p>
         </div>
       </div>
 
+      <!-- Language select -->
       <div>
-        <%= f.label :target_language, "Idioma de destino", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :target_language, class: "flex items-center gap-2 text-sm tracking-wider font-semibold mb-3", style: "color: var(--toku-gold);" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+          </svg>
+          Idioma de destino
+        <% end %>
         <%= f.select :target_language,
             Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
             { prompt: "Selecione o idioma" },
-            class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
-            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+            class: "block w-full rounded-xl px-4 py-3 text-base transition-all duration-300 focus:outline-none",
+            style: "background: rgba(12, 10, 26, 0.8); border: 1px solid rgba(124, 58, 237, 0.25); color: var(--toku-silver); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);" %>
       </div>
 
+      <!-- Model select -->
       <div>
-        <%= f.label :model_used, "Modelo de IA", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :model_used, class: "flex items-center gap-2 text-sm tracking-wider font-semibold mb-3", style: "color: var(--toku-gold);" do %>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+          </svg>
+          Modelo de IA
+        <% end %>
         <%= f.select :model_used,
             Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
             {},
-            class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
-            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+            class: "block w-full rounded-xl px-4 py-3 text-base transition-all duration-300 focus:outline-none",
+            style: "background: rgba(12, 10, 26, 0.8); border: 1px solid rgba(124, 58, 237, 0.25); color: var(--toku-silver); box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);" %>
       </div>
 
-      <div class="pt-2">
-        <p id="file-warning" class="text-sm mb-3 text-center" style="color: var(--toku-gold);">
-          Envie um arquivo antes para comecar
+      <!-- Submit -->
+      <div class="pt-3">
+        <p id="file-warning" class="text-sm mb-4 text-center flex items-center justify-center gap-2" style="color: var(--toku-gold); opacity: 0.7;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+          </svg>
+          Envie um arquivo para começar
         </p>
         <%= f.submit "Continuar para pagamento",
             id: "submit-btn",
             disabled: true,
-            class: "toku-btn-primary w-full rounded-lg px-6 py-3 text-base text-white tracking-wider uppercase cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" %>
+            class: "group toku-btn-primary w-full rounded-xl px-6 py-4 text-base font-bold text-white tracking-wider uppercase cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300" %>
       </div>
     <% end %>
   </div>
+
+  <!-- Info hint -->
+  <p class="text-center text-xs mt-6" style="color: rgba(203, 213, 225, 0.35);">
+    Seus dados são processados com segurança e não são armazenados.
+  </p>
 </div>
 
 <script>
@@ -72,6 +122,7 @@
     const warning = document.getElementById("file-warning");
     const dropZone = document.getElementById("file-drop-zone");
     const dropText = document.getElementById("file-drop-text");
+    const dropIcon = document.getElementById("file-drop-icon");
 
     if (!fileInput || !submitBtn) return;
 
@@ -80,14 +131,16 @@
         submitBtn.disabled = false;
         warning.style.display = "none";
         dropZone.style.borderColor = "var(--toku-gold)";
-        dropZone.style.background = "rgba(245, 158, 11, 0.08)";
+        dropZone.style.background = "rgba(245, 158, 11, 0.06)";
+        dropIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-10"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>';
         dropText.innerHTML = '<strong style="color: var(--toku-gold);">' + fileInput.files[0].name + '</strong>';
       } else {
         submitBtn.disabled = true;
-        warning.style.display = "block";
-        dropZone.style.borderColor = "rgba(124, 58, 237, 0.4)";
-        dropZone.style.background = "rgba(124, 58, 237, 0.05)";
-        dropText.innerHTML = 'Clique ou arraste seu arquivo <code class="font-mono text-xs px-1 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>';
+        warning.style.display = "flex";
+        dropZone.style.borderColor = "rgba(124, 58, 237, 0.35)";
+        dropZone.style.background = "rgba(124, 58, 237, 0.04)";
+        dropIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-10" style="color: rgba(124, 58, 237, 0.4);"><path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" /></svg>';
+        dropText.innerHTML = 'Clique ou arraste seu arquivo <code class="font-mono text-xs px-1.5 py-0.5 rounded" style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>';
       }
     }
 
@@ -96,14 +149,14 @@
     dropZone.addEventListener("dragover", function(e) {
       e.preventDefault();
       dropZone.style.borderColor = "var(--toku-gold)";
-      dropZone.style.background = "rgba(245, 158, 11, 0.12)";
+      dropZone.style.background = "rgba(245, 158, 11, 0.1)";
     });
 
     dropZone.addEventListener("dragleave", function(e) {
       e.preventDefault();
       if (!fileInput.files.length) {
-        dropZone.style.borderColor = "rgba(124, 58, 237, 0.4)";
-        dropZone.style.background = "rgba(124, 58, 237, 0.05)";
+        dropZone.style.borderColor = "rgba(124, 58, 237, 0.35)";
+        dropZone.style.background = "rgba(124, 58, 237, 0.04)";
       }
     });
 
