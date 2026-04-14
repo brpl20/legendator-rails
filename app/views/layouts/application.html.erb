@@ -21,15 +21,7 @@
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-T4PQ0PR817"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-T4PQ0PR817');
-    </script>
+    <!-- Google Analytics is loaded dynamically via cookie consent -->
     <style>
       :root {
         --toku-red: #e11d48;
@@ -45,7 +37,7 @@
       body.toku-body {
         font-family: 'Rajdhani', sans-serif;
         background: var(--toku-dark);
-        overflow-x: hidden;
+        overflow-x: clip;
       }
 
       /* Hero section */
@@ -471,7 +463,7 @@
     </style>
   </head>
 
-  <body class="min-h-full toku-body text-slate-100 antialiased">
+  <body class="min-h-full toku-body text-slate-100 antialiased" data-controller="cookie-consent">
     <nav class="toku-nav">
       <div class="mx-auto max-w-5xl flex items-center justify-between px-6 py-4">
         <!-- Brand -->
@@ -535,5 +527,29 @@
     <main class="mx-auto max-w-5xl px-6 py-10">
       <%= yield %>
     </main>
+
+    <!-- Cookie Consent Banner -->
+    <div data-cookie-consent-target="banner" class="hidden" style="position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; background: linear-gradient(180deg, rgba(26, 16, 51, 0.98), rgba(12, 10, 26, 0.99)); border-top: 1px solid rgba(124, 58, 237, 0.3); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+      <div class="mx-auto max-w-5xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="text-sm text-center sm:text-left" style="color: var(--toku-silver);">
+          Usamos cookies para analytics e melhorar sua experiência.
+          Ao aceitar, você concorda com nossa
+          <%= link_to "Política de Privacidade", politica_de_privacidade_path, class: "underline hover:text-white transition", style: "color: var(--toku-gold);" %>.
+        </div>
+        <div class="flex items-center gap-3 shrink-0">
+          <button data-action="cookie-consent#reject"
+                  class="rounded-lg px-5 py-2 text-sm font-semibold tracking-wider uppercase transition"
+                  style="color: var(--toku-silver); border: 1px solid rgba(124, 58, 237, 0.3); background: transparent;"
+                  onmouseover="this.style.borderColor='rgba(124, 58, 237, 0.6)'"
+                  onmouseout="this.style.borderColor='rgba(124, 58, 237, 0.3)'">
+            Recusar
+          </button>
+          <button data-action="cookie-consent#accept"
+                  class="toku-btn-primary rounded-lg px-5 py-2 text-sm font-bold text-white tracking-wider uppercase">
+            Aceitar
+          </button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
