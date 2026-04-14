@@ -1,10 +1,10 @@
 <div class="max-w-xl mx-auto">
   <div class="text-center mb-10">
-    <p class="font-cyber text-xs tracking-widest uppercase mb-2"
+    <p class="text-xs tracking-widest uppercase mb-2"
        style="color: var(--toku-red);">
       &#x2501;&#x2501; DEV MODE &#x2501;&#x2501;
     </p>
-    <h1 class="font-hero text-3xl text-white text-glow-red">Traduzir Legenda (Dev)</h1>
+    <h1 class="text-3xl text-white">Traduzir Legenda (Dev)</h1>
     <p class="mt-3 text-base" style="color: var(--toku-silver);">Dispara a API real sem pagamento. Somente em development.</p>
   </div>
 
@@ -21,7 +21,7 @@
       <% end %>
 
       <div>
-        <%= f.label :original_file, "Arquivo SRT", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :original_file, "Arquivo SRT", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
         <%= f.file_field :original_file,
             accept: ".srt",
             id: "file-input",
@@ -34,7 +34,7 @@
       </div>
 
       <div>
-        <%= f.label :target_language, "Idioma de destino", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :target_language, "Idioma de destino", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
         <%= f.select :target_language,
             Translation::SUPPORTED_LANGUAGES.map { |k, v| [v, k] },
             { prompt: "Selecione o idioma" },
@@ -43,7 +43,7 @@
       </div>
 
       <div>
-        <%= f.label :model_used, "Modelo de IA", class: "block text-sm font-tokusatsu tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.label :model_used, "Modelo de IA", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
         <%= f.select :model_used,
             Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
             {},
@@ -58,7 +58,7 @@
         <%= f.submit "Traduzir agora (sem pagamento)",
             id: "submit-btn",
             disabled: true,
-            class: "toku-btn-primary w-full rounded-lg px-6 py-3 text-base font-tokusatsu text-white tracking-wider uppercase cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" %>
+            class: "toku-btn-primary w-full rounded-lg px-6 py-3 text-base text-white tracking-wider uppercase cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" %>
       </div>
     <% end %>
   </div>

@@ -1,10 +1,15 @@
 <!-- ═══ HERO BANNER WITH LOGO ═══ -->
-<section class="starburst speed-lines text-center py-16 relative">
+<section class="hero-section text-center py-20 relative overflow-hidden">
+
+  <!-- Background texture: grid + radial glow -->
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow hero-glow--purple"></div>
+  <div class="hero-glow hero-glow--red"></div>
 
   <!-- Logo Video Banner -->
-  <div class="anim-scale-in mb-8">
-    <div class="logo-banner rounded-xl mx-auto max-w-2xl overflow-hidden shadow-2xl corner-brackets"
-         style="box-shadow: 0 0 60px rgba(124, 58, 237, 0.2), 0 0 120px rgba(225, 29, 72, 0.1);">
+  <div class="anim-scale-in mb-10 relative" style="z-index: 1;">
+    <div class="logo-banner rounded-2xl mx-auto max-w-2xl overflow-hidden shadow-2xl corner-brackets"
+         style="box-shadow: 0 0 60px rgba(124, 58, 237, 0.25), 0 25px 50px rgba(0, 0, 0, 0.5);">
       <video autoplay loop muted playsinline
              class="w-full"
              style="filter: saturate(1.2) contrast(1.05); display: block;">
@@ -13,107 +18,160 @@
     </div>
   </div>
 
-  <!-- Title with Tokusatsu flair -->
-  <div class="anim-slide-up delay-1">
-    <p class="font-cyber text-xs tracking-widest uppercase mb-4"
-       style="color: var(--toku-gold);">
-      &#x2501;&#x2501; Tradutor de Legendas &#x2501;&#x2501;
-    </p>
-  </div>
-
-  <h1 class="anim-slide-up delay-2 font-hero text-4xl sm:text-5xl tracking-tight text-white text-glow-red slash-decoration"
-      style="line-height: 1.2;">
+  <h1 class="anim-slide-up delay-2 text-4xl sm:text-5xl tracking-tight text-white font-bold relative"
+      style="line-height: 1.2; font-family: 'Orbitron', sans-serif; z-index: 1;">
     Traduza Legendas<br>
-    <span style="color: var(--toku-gold);" class="text-glow-gold">em Segundos</span>
+    <span class="hero-highlight text-4xl">em Segundos</span>
   </h1>
 
-  <p class="anim-fade-in delay-3 mt-6 text-lg max-w-2xl mx-auto leading-relaxed"
-     style="color: var(--toku-silver);">
+  <p class="anim-fade-in delay-3 mt-8 text-lg max-w-2xl mx-auto leading-relaxed relative"
+     style="color: var(--toku-silver); z-index: 1;">
     Já achou legendas em inglês ou japonês e não em português?<br>
     <strong class="text-white">Faça a tradução por IA agora!</strong><br>
     Faça upload do seu arquivo SRT e receba a tradução em qualquer idioma.<br>
-    Sem cadastro. Pague com PIX. A partir de <strong style="color: var(--toku-gold);">R$ 2,00</strong>.
+    Sem cadastro. Pague com PIX. A partir de <strong style="color: var(--toku-gold);">R$ 1,00</strong>.
   </p>
 
   <!-- CTA Buttons -->
   <div class="anim-slide-up delay-4 mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
     <%= link_to new_translation_path,
-        class: "toku-btn-primary inline-block rounded-lg px-8 py-3 text-base font-semibold text-white tracking-wider uppercase font-tokusatsu" do %>
+        class: "group toku-btn-primary inline-flex items-center rounded-lg px-10 py-4 text-lg font-bold text-white tracking-wider uppercase" do %>
+      <svg class="mr-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
       Traduzir Agora
+      <svg class="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     <% end %>
     <%= link_to recover_path,
-        class: "toku-btn-secondary inline-block rounded-lg px-8 py-3 text-base font-semibold tracking-wider uppercase font-tokusatsu" do %>
-      Já tenho um código
+        class: "group toku-btn-secondary inline-flex items-center rounded-lg px-10 py-4 text-lg font-bold tracking-wider uppercase" do %>
+      <svg class="mr-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      Já Tenho um Código
+      <svg class="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
     <% end %>
   </div>
 </section>
 
+<!-- Section divider -->
+<div class="section-divider"></div>
+
 <!-- ═══ COMO FUNCIONA ═══ -->
-<section class="py-16">
-  <div class="anim-fade-in text-center mb-12">
-    <p class="font-cyber text-xs tracking-widest uppercase mb-2"
-       style="color: var(--toku-purple);">
-      &#x25C6; Missão &#x25C6;
+<section class="como-funciona-section py-20 relative overflow-hidden">
+
+  <div class="anim-fade-in text-center mb-14 relative">
+    <p class="text-xs tracking-widest uppercase mb-3"
+       style="color: var(--toku-gold);">
+      3 passos simples
     </p>
-    <h2 class="font-hero text-2xl text-white text-glow-red">Como Funciona</h2>
+    <h2 id="como-funciona" class="text-3xl sm:text-4xl text-white font-bold"
+        style="font-family: 'Orbitron', sans-serif;">Como Funciona</h2>
+    <div class="section-underline mx-auto mt-4"></div>
   </div>
 
-  <div class="grid sm:grid-cols-3 gap-8">
+  <div class="grid sm:grid-cols-3 gap-8 relative" style="z-index: 1;">
     <!-- Step 1 -->
-    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-1">
-      <div class="step-number mb-4">01</div>
-      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Upload</h3>
-      <p class="text-base" style="color: var(--toku-silver);">
-        Envie seu arquivo <code class="font-mono text-sm px-1 py-0.5 rounded"
+    <div class="toku-card rounded-2xl p-8 text-center anim-slide-up delay-1">
+      <div class="step-label">Passo 1</div>
+      <div class="flex justify-center mb-5">
+        <div class="step-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="text-xl text-white mb-3 tracking-wider font-bold">Upload</h3>
+      <p class="text-base font-medium leading-relaxed" style="color: var(--toku-silver);">
+        Envie seu arquivo <code class="font-mono text-sm px-1.5 py-0.5 rounded"
         style="background: rgba(124, 58, 237, 0.2); color: var(--toku-gold);">.srt</code>
         e escolha o idioma de destino.
       </p>
     </div>
 
     <!-- Step 2 -->
-    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-2">
-      <div class="step-number mb-4">02</div>
-      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Pague com PIX</h3>
-      <p class="text-base" style="color: var(--toku-silver);">
+    <div class="toku-card rounded-2xl p-8 text-center anim-slide-up delay-2">
+      <div class="step-label">Passo 2</div>
+      <div class="flex justify-center mb-5">
+        <div class="step-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="text-xl text-white mb-3 tracking-wider font-bold">Pague com PIX</h3>
+      <p class="text-base font-medium leading-relaxed" style="color: var(--toku-silver);">
         Escaneie o QR code ou copie o código PIX. Pagamento instantâneo.
       </p>
     </div>
 
     <!-- Step 3 -->
-    <div class="toku-card rounded-xl p-8 text-center anim-slide-up delay-3">
-      <div class="step-number mb-4">03</div>
-      <h3 class="font-tokusatsu text-lg text-white mb-2 tracking-wider">Download</h3>
-      <p class="text-base" style="color: var(--toku-silver);">
+    <div class="toku-card rounded-2xl p-8 text-center anim-slide-up delay-3">
+      <div class="step-label">Passo 3</div>
+      <div class="flex justify-center mb-5">
+        <div class="step-icon-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="text-xl text-white mb-3 tracking-wider font-bold">Download</h3>
+      <p class="text-base font-medium leading-relaxed" style="color: var(--toku-silver);">
         Receba o arquivo traduzido em segundos após a confirmação.
       </p>
     </div>
   </div>
 </section>
 
+<!-- Section divider -->
+<div class="section-divider"></div>
+
 <!-- ═══ POR QUE É COBRADO ═══ -->
-<section class="py-16">
-  <div class="anim-fade-in text-center mb-8">
-    <p class="font-cyber text-xs tracking-widest uppercase mb-2"
-       style="color: var(--toku-purple);">
-      &#x25C6; Transparência &#x25C6;
+<section class="preco-section py-20 relative overflow-hidden">
+
+  <div class="anim-fade-in text-center mb-10">
+    <p class="text-xs tracking-widest uppercase mb-3"
+       style="color: var(--toku-gold);">
+       Transparência
     </p>
-    <h2 class="font-hero text-2xl text-white text-glow-red">Por que é cobrado?</h2>
+    <h2 id="preco" class="text-3xl sm:text-4xl text-white font-bold"
+        style="font-family: 'Orbitron', sans-serif;">Por que é cobrado?</h2>
+    <div class="section-underline mx-auto mt-4"></div>
   </div>
 
-  <div class="toku-card rounded-xl p-8 max-w-2xl mx-auto text-center anim-slide-up delay-1">
-    <p class="text-base leading-relaxed" style="color: var(--toku-silver);">
+  <div class="toku-card rounded-2xl p-10 max-w-2xl mx-auto text-center anim-slide-up delay-1 relative">
+    <!-- Decorative quote icon -->
+    <div class="flex justify-center mb-6">
+      <div class="step-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+      </div>
+    </div>
+
+    <p class="text-lg leading-relaxed mb-6" style="color: var(--toku-silver);">
       Os modelos de IA grátis ainda não são suficientes para dar conta de uma boa tradução
       e o contexto de um texto de legendas é extremamente longo.
+    </p>
+    <p class="text-lg leading-relaxed" style="color: var(--toku-silver);">
       Nossa cobrança é apenas para manter o <strong class="text-white">custo operacional</strong>
       e a <strong class="text-white">saúde do projeto</strong>.
     </p>
+
+    <!-- Price highlight -->
+    <div class="mt-8 pt-6" style="border-top: 1px solid rgba(124, 58, 237, 0.2);">
+      <p class="text-sm uppercase tracking-widest mb-2" style="color: var(--toku-silver);">A partir de</p>
+      <p class="text-4xl font-bold" style="font-family: 'Orbitron', sans-serif; color: var(--toku-gold);">
+        R$ 1,00
+      </p>
+      <p class="text-sm mt-2" style="color: rgba(203, 213, 225, 0.6);">por arquivo traduzido</p>
+    </div>
   </div>
 </section>
 
-<!-- ═══ BOTTOM DECORATION ═══ -->
-<div class="text-center py-8 anim-fade-in delay-5">
-  <div style="width: 120px; height: 2px; margin: 0 auto; background: linear-gradient(90deg, transparent, var(--toku-red), var(--toku-gold), var(--toku-red), transparent);"></div>
-  <p class="font-cyber text-xs tracking-widest mt-4" style="color: rgba(124, 58, 237, 0.5);">
-    LEGENDATOR &mdash; 2025
+<!-- ═══ FOOTER ═══ -->
+<footer class="footer-section text-center py-12 relative">
+  <div class="section-divider mb-10"></div>
+  <div class="flex justify-center items-center gap-3 mb-4">
+    <span class="text-xl tracking-wider font-bold" style="font-family: 'Orbitron', sans-serif; color: var(--toku-gold);">LEGENDATOR</span>
+  </div>
+  <p class="text-sm" style="color: rgba(124, 58, 237, 0.5);">
+    &copy; 2026 Legendator. Todos os direitos reservados.
   </p>
-</div>
+</footer>

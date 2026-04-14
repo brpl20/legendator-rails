@@ -41,6 +41,7 @@ class PixService
 
   def check_payment(payment)
     return false unless payment&.pending?
+    return true if payment.confirmed?
 
     response = fetch_cobranca(payment.pix_txid)
     return false unless response["status"] == "CONCLUIDA"
@@ -50,7 +51,7 @@ class PixService
     TranslateSubtitleJob.perform_later(payment.translation.id)
     true
   rescue => e
-    Rails.logger.warn("[PixService] check_payment failed: #{e.message}")
+    Rails.logger.warn("[PixService] check_payment failed for txid #{payment&.pix_txid}: #{e.message}")
     false
   end
 
@@ -58,6 +59,18 @@ class PixService
     txid = pix_data[:txid]
     payment = Payment.find_by(pix_txid: txid)
     return false unless payment
+
+    # Idempotency: if already confirmed, return true without re-enqueuing
+    return true if payment.confirmed?
+
+    # Only confirm pending payments
+    return false unless payment.pending?
+
+    # Check expiration
+    if payment.expired?
+      Rails.logger.warn("[PixService] Rejecting payment for expired charge: #{txid}")
+      return false
+    end
 
     payment.update!(status: :confirmed, paid_at: Time.current)
     payment.translation.paid!
