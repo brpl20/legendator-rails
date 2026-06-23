@@ -1,23 +1,60 @@
-<div class="max-w-md mx-auto text-center">
-  <h1 class="text-3xl font-bold text-white mb-2">Recuperar Traducao</h1>
-  <p class="text-slate-400 mb-8">Digite o codigo que aparece no seu extrato bancario ou que foi exibido apos o upload.</p>
+<div class="max-w-md mx-auto">
+  <!-- Header -->
+  <div class="text-center mb-12">
+    <div class="flex justify-center mb-5">
+      <div class="step-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="var(--toku-gold)" class="size-8">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        </svg>
+      </div>
+    </div>
+    <p class="text-xs tracking-widest uppercase mb-3"
+       style="color: var(--toku-gold);">
+      Recuperação
+    </p>
+    <h1 class="text-3xl sm:text-4xl text-white font-bold"
+        style="font-family: 'Orbitron', sans-serif;">Recuperar Tradução</h1>
+    <p class="mt-4 text-base max-w-sm mx-auto leading-relaxed" style="color: var(--toku-silver);">
+      Digite o código que aparece no seu extrato bancário ou que foi exibido após o upload.
+    </p>
+  </div>
 
   <% if flash[:alert] %>
-    <div class="rounded-lg bg-red-900/50 border border-red-700 px-4 py-3 text-red-200 text-sm mb-6">
+    <div class="rounded-xl px-5 py-4 text-sm mb-6 flex items-center justify-center gap-3" style="background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: #fca5a5;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 flex-shrink-0">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+      </svg>
       <%= flash[:alert] %>
     </div>
   <% end %>
 
-  <%= form_with url: recover_path, method: :post, class: "space-y-6" do |f| %>
-    <div>
-      <%= f.text_field :code,
-          placeholder: "LEG-XXXXXX",
-          class: "block w-full rounded-lg bg-slate-800 border border-slate-600 text-slate-200 px-6 py-4 text-center text-2xl font-mono tracking-widest placeholder-slate-600 focus:ring-emerald-500 focus:border-emerald-500" %>
-    </div>
+  <!-- Form card -->
+  <div class="toku-card rounded-2xl p-8 sm:p-10">
+    <%= form_with url: recover_path, method: :post, class: "space-y-7" do |f| %>
+      <div>
+        <label class="flex items-center justify-center gap-2 text-sm tracking-wider font-semibold mb-4" style="color: var(--toku-gold);">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
+          </svg>
+          Código de recuperação
+        </label>
+        <%= f.text_field :code,
+            placeholder: "LEG-XXXXXX",
+            class: "block w-full rounded-xl px-6 py-5 text-center text-2xl font-mono tracking-widest focus:outline-none transition-all duration-300",
+            style: "background: rgba(12, 10, 26, 0.8); border: 2px solid rgba(124, 58, 237, 0.25); color: white; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);",
+            onfocus: "this.style.borderColor='var(--toku-gold)'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.3), 0 0 12px rgba(254, 187, 18, 0.1)';",
+            onblur: "this.style.borderColor='rgba(124, 58, 237, 0.25)'; this.style.boxShadow='inset 0 2px 4px rgba(0,0,0,0.3)';" %>
+      </div>
 
-    <div>
-      <%= f.submit "Buscar",
-          class: "w-full rounded-lg bg-emerald-600 px-6 py-3 text-base font-semibold text-white shadow hover:bg-emerald-500 transition cursor-pointer" %>
-    </div>
-  <% end %>
+      <div>
+        <%= f.submit "Buscar Tradução",
+            class: "group toku-btn-primary w-full rounded-xl px-6 py-4 text-base font-bold text-white tracking-wider uppercase cursor-pointer transition-all duration-300" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Hint -->
+  <p class="text-center text-xs mt-6" style="color: rgba(203, 213, 225, 0.35);">
+    O código começa com <code class="font-mono" style="color: rgba(254, 187, 18, 0.5);">LEG-</code> e tem 6 caracteres.
+  </p>
 </div>
