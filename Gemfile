@@ -79,4 +79,9 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
+
+  # Blocks outbound HTTP in specs. Without it the suite calls OpenRouter for
+  # real on every upload it exercises — billed, slow and flaky, and CI runs on
+  # every push. Real-provider checks belong in the scheduled healthcheck task.
+  gem "webmock"
 end

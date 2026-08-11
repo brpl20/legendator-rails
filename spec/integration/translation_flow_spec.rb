@@ -8,6 +8,9 @@ RSpec.describe "Translation flow", type: :request do
       estimated_tokens: { input: 100, output: 100, total: 200 }
     })
     allow_any_instance_of(CostCalculator).to receive(:fetch_exchange_rate).and_return(5.50)
+    # show polls the bank while payment is pending — without this the spec
+    # authenticates against Banco Inter production on every run.
+    allow_any_instance_of(PixService).to receive(:check_payment)
     allow_any_instance_of(PixService).to receive(:create_charge).and_wrap_original do |_method, translation|
       translation.create_payment!(
         pix_txid: "LEG#{translation.access_token}#{Time.current.to_i}".gsub(/[^a-zA-Z0-9]/, "").ljust(26, "A")[0, 35],

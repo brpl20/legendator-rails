@@ -31,11 +31,28 @@ class TranslationsController < ApplicationController
         subtitle_count: measurement.subtitles
       )
 
+      apply_preview(@translation, content)
       PixService.new.create_charge(@translation)
 
       redirect_to @translation
     else
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  # The customer can refine the context right up until they pay — that is the
+  # whole point of showing them what we detected.
+  def update_context
+    translation = find_translation!
+
+    unless translation.pending_payment?
+      return redirect_to translation, alert: "A traducao ja comecou, nao da mais para mudar o contexto."
+    end
+
+    if translation.update(context: params.dig(:translation, :context))
+      redirect_to translation, notice: "Contexto atualizado."
+    else
+      redirect_to translation, alert: translation.errors.full_messages.to_sentence
     end
   end
 
@@ -91,6 +108,21 @@ class TranslationsController < ApplicationController
 
   def translation_params
     params.require(:translation).permit(:original_file, :target_language, :model_used, :context)
+  end
+
+  # Best-effort: a failed preview must never cost us the sale, so anything that
+  # goes wrong here is swallowed and the customer just sees no summary.
+  def apply_preview(translation, content)
+    preview = SrtPreview.new(content, model: translation.model_used).call
+    return unless preview.ok?
+
+    translation.update(
+      detected_title: preview.title,
+      detected_summary: preview.summary,
+      context: translation.context.presence || preview.suggested_context
+    )
+  rescue StandardError => e
+    Rails.logger.warn("[TranslationsController] preview skipped for #{translation.id}: #{e.class}: #{e.message}")
   end
 
   # The upload is still an IO here — the blob is not in the storage service

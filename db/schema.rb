@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_10_235500) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_11_055007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -64,6 +64,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_10_235500) do
     t.decimal "cost_ai_brl", precision: 10, scale: 2, default: "0.0"
     t.decimal "cost_user", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
+    t.text "detected_summary"
+    t.string "detected_title"
     t.text "error_message"
     t.string "model_used", default: "openai/gpt-5.6-luna"
     t.string "original_filename", null: false

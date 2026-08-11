@@ -5,6 +5,11 @@ require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+
+require "webmock/rspec"
+# Any HTTP call that escapes a stub fails the spec loudly instead of silently
+# hitting a paid provider.
+WebMock.disable_net_connect!(allow_localhost: true)
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -64,4 +69,15 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # The upload flow calls OpenRouter (subtitle preview) and awesomeapi (USD/BRL).
+  # Both are billed or rate-limited and neither belongs in a unit suite that CI
+  # runs on every push, so outbound HTTP is blocked and the two are stubbed by
+  # default. A spec that wants different behaviour overrides these locally.
+  config.before do
+    allow_any_instance_of(SrtPreview).to receive(:call).and_return(
+      SrtPreview::Preview.new(title: nil, summary: nil, suggested_context: nil, ok: false)
+    )
+    allow_any_instance_of(CostCalculator).to receive(:fetch_exchange_rate).and_return(5.50)
+  end
 end

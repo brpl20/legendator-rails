@@ -3,6 +3,12 @@
 Estado em 10/08/2026. Tudo que está em "Feito" foi verificado com as suítes rodando;
 tudo em "Pendente" está descrito com arquivo, contrato e critério de aceite.
 
+> **O trabalho da segunda leva NAO esta commitado.** Paralelismo, glossario,
+> preview pre-pagamento e o bloqueio de rede nos testes estao no working tree
+> dos dois repos, verificados (124 testes no gem, 71 specs no Rails) mas sem
+> commit e sem deploy. Producao roda o commit `258dca4`, que tem catalogo de
+> modelos, gate e contexto — mas **nao** tem paralelismo nem glossario.
+
 ---
 
 ## 0. Bloqueadores — resolver antes de qualquer deploy
@@ -27,7 +33,7 @@ git push origin master
 cd ../legendator-rails
 bundle config unset local.legendator     # volta a resolver do GitHub
 bundle update legendator
-bundle exec rspec                         # tem que continuar 56/56
+bundle exec rspec                         # tem que continuar verde
 git add -A && git commit -m "feat: catalogo unico de modelos, gate de tamanho, contexto do usuario"
 ```
 
@@ -210,48 +216,109 @@ a página gira eternamente. Agora ambos os `retry_on` têm bloco que chama
 
 **Verificação**: `bundle exec rspec` → **56 exemplos, 0 falhas** (eram 38).
 
+### 1.9 Paralelismo, glossário e preview (segunda leva — NAO commitada)
+
+**Paralelismo.** Pool de threads com teto configuravel (`concurrency`, padrao 4).
+Os workers so escrevem na propria posicao do array; o merge acontece na thread
+principal em ordem de chunk, entao o SRT final e deterministico. O logger e
+serializado por mutex — quatro threads com um `puts` cru partem linhas ao meio.
+Um chunk que falha em definitivo aborta os demais em vez de seguir queimando
+tokens de um job perdido. O `sleep(0.5)` entre chunks saiu.
+
+**Glossário** (`lib/legendator/glossary.rb`). Uma passada sobre o arquivo antes
+de traduzir, que nao traduz nada — devolve so as decisoes que valem para o filme
+inteiro. Pesada de entrada, leve de saida.
+
+O motivo esta medido. Na primeira rodada, `"Miss Scarlett!"` — mesma frase
+original, 6 ocorrencias — voltou em **tres traducoes diferentes**: `"Miss
+Scarlett!"` no chunk 1, `"Senhorita Scarlett!"` no 2, `"Srta. Scarlett!"` no 3.
+Nomes proprios (Scarlett, Ashley, Rhett, Tara) se mantiveram sozinhos nos 7
+chunks; o que quebrou foram os **julgamentos de estilo** — `Miss` (124x), `Mrs`
+(64x), `Melly` (61x). Por isso o prompt do glossario mira honorificos, patentes,
+apelidos, registro e bordoes, nao nomes.
+
+Falha do glossario nunca derruba o job: devolve vazio e a traducao segue sem ele.
+O cliente ja pagou, degradar e aceitavel, abortar nao. O contexto do usuario e
+declarado autoritativo dentro do prompt do glossario e vem acima dele no prompt
+de cada chunk.
+
+**Preview pre-pagamento** (`app/services/srt_preview.rb`). Le so as 150 primeiras
+legendas (~R$ 0,002) e devolve obra, resumo e um contexto sugerido ja preenchido
+com os termos detectados. Roda em todo upload, inclusive abandonado, por isso le
+so a abertura — o glossario completo (~R$ 0,027) so roda depois do pagamento.
+
+A pagina de pendente ganhou o resumo e a caixa de contexto editavel. O
+`<meta refresh>` de 5s teve de sair: ele apagaria o que o cliente estivesse
+digitando. Virou um poller em JS que pula o reload enquanto o campo esta em foco
+ou tem alteracao nao salva.
+
+**Resultado medido** (`movie-big-example.srt`, mesma config de producao):
+
+| | antes | depois |
+|---|---|---|
+| tempo | 281s (4,7 min) | **105s (1,7 min)** |
+| custo | R$ 0,168 | R$ 0,199 |
+| cobertura | 100% | 100% |
+| `"Miss Scarlett!"` | 3 traducoes | **1** |
+| frases divergentes entre chunks | 7 | 4 |
+| marcadores inconsistentes (Miss/Mrs/Melly) | 3 | **0** |
+
+O glossario identificou o filme sozinho ("E o Vento Levou") e produziu 24 termos,
+incluindo decisoes de **nao** traduzir (`Mammy`, `Fiddle-dee-dee`).
+
+O que nao melhorou: as 4 frases restantes sao coloquialismos genericos ("What is
+it?"), que o glossario nao cobre por nao serem entidades. E **"Whoa!" piorou** —
+tinha 2 variantes, agora tem 3. Para fechar isso, o caminho e o glossario devolver
+tambem as N frases curtas mais repetidas do arquivo, calculadas por frequencia
+sem IA, pedindo uma traducao canonica para cada.
+
+**Gate recalibrado.** O glossario fez o gate subestimar (R$ 0,171 estimado contra
+R$ 0,199 real) — o lado perigoso do erro. Agora modela as duas fases e estima
+R$ 0,203, +1,8% de folga. O corte do teto de R$ 0,70 moveu de ~9.000 para ~7.800
+blocos; ainda cobre dois filmes concatenados.
+
+### 1.10 A suíte de testes chamava provedores de verdade
+
+Ao adicionar o preview a suite pulou de 2,4s para 14,5s. Investigando, duas
+coisas que **ja eram verdade antes de hoje**:
+
+1. A key da OpenRouter esta presente no ambiente de teste, entao toda spec que
+   exercita upload chamava o provedor de verdade. O CI roda em todo push.
+2. Pior: a spec de integracao autenticava no **Banco Inter de producao**. O
+   `show` chama `PixService#check_payment` enquanto o pagamento esta pendente, e
+   a spec stubava apenas `create_charge`. Cada `rspec` fazia
+   `POST cdpj.partners.bancointer.com.br/oauth/v2/token` com as credenciais reais
+   e consultava um txid inexistente.
+
+Adicionado `webmock` com `disable_net_connect!(allow_localhost: true)` e stubs
+padrao no `rails_helper`. Qualquer chamada externa que escape de um stub agora
+**falha a spec ruidosamente**. Suite voltou para 1,9s.
+
 ---
 
 ## 2. Pendente — backlog do Dia 2
 
-### 2.1 [ALTA] Paralelizar os chunks — o fix real da lentidão
+### 2.1 ~~[ALTA] Paralelizar os chunks~~ — FEITO (ver 1.9)
 
-**Arquivo**: `legendator-gem/lib/legendator/pipeline.rb`, método `run`, linha do `chunks.each_with_index`.
+Implementado e medido: 281s -> 105s. Detalhes na secao 1.9.
 
-Hoje é estritamente sequencial, com `sleep(0.5)` entre chunks. Para o `movie-big`
-com Luna: ~70k tokens de saída a ~114 tok/s ≈ **10 minutos**.
+### 2.2 ~~[ALTA] Escolher um fallback rápido~~ — RESOLVIDO, com correcao
 
-Proposta: pool de threads com concorrência limitada (4–6), preservando ordem no merge.
+Registro de um erro meu: eu havia concluido que `deepseek/deepseek-v4-flash-0731`
+era inviavel ("25x mais lento, levaria horas"). Errado. Aquela medicao usou uma
+amostra de **25 blocos**, onde a latencia fixa de conexao domina e a taxa real
+nao aparece.
 
-```ruby
-POOL_SIZE = 5
+Medido de novo com chunk realista de 490 blocos: **78s, 111 tok/s, 490/490
+blocos, US$ 0,00338**. O Luna faz ~159 tok/s. Ou seja ~30% mais lento e ~30%
+mais barato — fallback perfeitamente valido, fica como esta.
 
-results = chunks.each_slice(POOL_SIZE).flat_map do |batch|
-  batch.map { |chunk| Thread.new { translate_chunk_with_fallback(...) } }.map(&:value)
-end
-```
+Licao para as proximas medicoes: throughput medido em amostra pequena mede
+latencia de conexao, nao velocidade.
 
-Cuidados:
-- `all_translations.merge!` e os acumuladores de token **não são thread-safe** —
-  merge só depois do `.map(&:value)`, fora das threads.
-- A OpenRouter não publica limite fixo de RPS nessa key (`rate_limit.requests: -1`,
-  campo deprecado). Comece com 4 e observe 429 — o retry com backoff já existe.
-- O `sleep(0.5)` entre chunks perde o sentido; remover.
-
-**Aceite**: `movie-big-example.srt` de ponta a ponta em < 3 min, cobertura 100%,
-mesma ordem de IDs no SRT final.
-
-### 2.2 [ALTA] Escolher um fallback rápido
-
-`deepseek/deepseek-v4-flash-0731` levou **124s para 25 legendas** (~9 tok/s).
-Extrapolado, um filme levaria horas — é um fallback que na prática trava o job.
-
-Medir latência de candidatos e trocar. `google/gemini-3.1-flash-lite`
-($0,25/$1,50, 65k saída) foi descartado como padrão por custo, mas como fallback
-(raro) o custo não importa — importa velocidade. **Medir antes de decidir.**
-
-Script de medição pronto para adaptar: veja o padrão em `docs/` ou refaça com
-`Legendator::AiClient.new(model:).translate(...)` cronometrado.
+O Grok foi cotado e descartado: `x-ai/grok-4.3` tem 1M de contexto mas saida a
+US$ 2,50/M — 4x o Luna, daria R$ 0,86 num filme, encostando no teto de R$ 0,70
+do gate.
 
 ### 2.3 [ALTA] Testes automatizados diários + semanais
 
@@ -359,9 +426,120 @@ e mostrar "estamos demorando mais que o normal, seu código é LEG-XXXX".
 
 ---
 
-## 3. Fase 3 — vídeo → transcrição → legenda
+## 3. Fase 3 — Operação, acesso e segurança
 
-Ideia: o usuário sobe um **vídeo**, a plataforma transcreve (Whisper ou equivalente)
+Fase separada, pedida em 11/08. Vem **antes** do tradutor de vídeo (agora Fase 4).
+O tema comum é conseguir operar e auditar o sistema sem abrir SSH no servidor.
+
+### 3.1 Testar sem pagar — por token, não por IP
+
+Decidido em 11/08: **o bypass por IP foi descartado.** `request.remote_ip` atrás
+de proxy vem de `X-Forwarded-For`, cabeçalho que o cliente controla — sem
+`trusted_proxies` configurado qualquer um forja o seu IP e traduz de graça.
+
+No lugar, um segredo que o portador tem e ninguém adivinha:
+
+```ruby
+# ENV no servidor: BYPASS_TOKEN=<32+ chars aleatorios>
+def payment_bypassed?
+  expected = ENV["BYPASS_TOKEN"].to_s
+  return false if expected.length < 32          # ENV vazia nunca libera
+  ActiveSupport::SecurityUtils.secure_compare(params[:k].to_s, expected)
+end
+```
+
+Detalhes que importam:
+
+- `secure_compare` e não `==`, para não vazar o token por tempo de resposta.
+- O piso de 32 chars é a guarda contra ENV vazia ou curta liberar o site.
+- O token vai na query string, então **aparece em log de acesso e no Referer**.
+  Aceitável para uso próprio; se incomodar, virar um campo de formulário.
+- Marcar a Translation (`cost_user: 0` ou coluna própria) para os seus testes
+  não entrarem no relatório de uso como venda.
+- Rotacionar o token se ele vazar é só trocar a ENV e redeployar.
+
+**Alternativa sem tocar em produção**: para avaliar só a qualidade da tradução,
+o CLI roda local com a sua key, sem passar pelo site:
+
+```bash
+cd legendator-gem
+bundle exec ruby bin/legendator translate filme.srt --lang=pt-BR --context="..."
+```
+
+### 3.2 Retenção dos SRTs de entrada e saída
+
+**Boa notícia: já está quase pronto.** O `ExpireTranslationsJob` só purga
+`original_file` de traduções **`pending_payment`** com mais de 30 dias. Traduções
+pagas mantêm entrada e saída no ActiveStorage, sem expiração. Os dados para
+avaliar qualidade já estão no servidor.
+
+O que falta:
+
+- **Confirmar o storage de produção.** Ver `config/storage.yml` e qual serviço o
+  ambiente de produção usa. Se for `Disk`, os arquivos vivem no disco da VM —
+  sem backup, e o disco enche. Um filme são ~230KB, então mil traduções são
+  ~450MB contando entrada e saída; não é urgente, mas merece uma decisão.
+- **Política explícita de retenção.** Hoje é "para sempre por omissão". Definir
+  por quanto tempo, e escrever isso na política de privacidade — que já existe
+  em `app/views/pages/politica_de_privacidade.html.erb`. Guardar legenda de
+  usuário indefinidamente sem dizer é um problema de LGPD, não de disco.
+- **Não purgar o original junto com o expirado.** Se um dia quiser auditar o que
+  deu errado numa tradução expirada, o input já terá sumido.
+
+### 3.3 Acessar os SRTs online, sem SSH
+
+Área administrativa mínima para listar traduções e baixar entrada e saída lado a
+lado.
+
+**Escopo sugerido**: uma rota `/admin` protegida por
+`http_basic_authenticate_with` (credenciais em `Rails.application.credentials`),
+listando as últimas N traduções com código, data, modelo, idioma, contagem de
+blocos, custo, status e dois links de download. Uma view de comparação
+lado a lado (original à esquerda, traduzido à direita) é o que realmente serve
+para julgar qualidade.
+
+Vale mostrar junto o **glossário usado** e o **contexto do cliente** — sem eles
+não dá para entender por que uma tradução saiu como saiu.
+
+**Alternativa via FFD**: em vez de UI no Legendator, mandar os SRTs para o
+dashboard. Mas os endpoints existentes (`usage`, `token-usage`, `bot`) são todos
+de métrica, não de arquivo — não há ingest de blob. Precisaria de endpoint novo
+lá. **Recomendo o `/admin` no próprio Legendator**: menos peça móvel, e os
+arquivos já estão do lado certo.
+
+### 3.4 Agentes de segurança
+
+Motivado pelo achado de 1.10: a suíte chamava o Banco Inter de produção há
+tempos e nada apitou. O objetivo é que esse tipo de coisa falhe sozinho.
+
+Quatro verificações concretas, em ordem de valor:
+
+1. **Rede bloqueada nos testes** — já feito em 1.10 com `webmock`. Manter, e
+   nunca adicionar exceção sem comentário justificando.
+
+2. **Nenhum endpoint de produção em configuração de teste.** Um teste que lê
+   `.env`/`config` e falha se `INTER_BASE_URL` apontar para produção quando
+   `Rails.env.test?`. A causa raiz do 1.10 foi exatamente isso, e o comentário
+   no `.env` ("cert was issued for production, not sandbox") mostra que era
+   conhecido e aceito.
+
+3. **Varredura de segredos no CI.** `gitleaks` ou `trufflehog` em
+   `.github/workflows/ci.yml`. Hoje `.env` está no `.gitignore`, mas
+   `docs/handoff-dia2.md` e este repo já citam trechos de credenciais — vale
+   confirmar que nada real vazou para o histórico.
+
+4. **Revisão de dependências.** O Dependabot já roda; falta alguém olhar. Três
+   PRs abertos (`bootsnap`, `propshaft`, `puma`) parados desde antes de hoje.
+
+Um quinto, mais ambicioso: rodar `/security-review` ou um agente de revisão no
+diff de cada PR. Útil, mas comece pelos quatro acima — são determinísticos e
+não dependem de julgamento.
+
+---
+
+## 4. Fase 4 — vídeo → transcrição → legenda
+
+Depois da Fase 3. Ideia: o usuário sobe um **vídeo**, a plataforma transcreve (Whisper ou equivalente)
 gerando legenda marcada no tempo, e daí em diante cai no pipeline que já existe.
 Produto muito mais forte: legenda qualquer coisa, não só quem já tem `.srt`.
 
@@ -396,13 +574,13 @@ um produto vendável sozinho.
 
 ---
 
-## 4. Como rodar as verificações
+## 5. Como rodar as verificações
 
 ```bash
-# gem — 107 testes, todos offline
+# gem — 124 testes, todos offline (107 sem a segunda leva)
 cd legendator-gem && bundle exec rake test
 
-# rails — 56 exemplos
+# rails — 71 exemplos (com a segunda leva; 57 sem ela)
 cd legendator-rails && bundle exec rspec
 
 # CLI, sem custo

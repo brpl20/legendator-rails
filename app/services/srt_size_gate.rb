@@ -60,12 +60,20 @@ class SrtSizeGate
     payload = texts.map { |id, text| "#{id}|#{text}" }.join("\n")
     payload_tokens = token_counter.count(payload)
 
-    # Input carries the system prompt once per chunk; output runs longer than the
-    # source because JSON wrapping and Portuguese both expand it. OUTPUT_RATIO is
-    # calibrated against a real full-file run, not guessed.
+    # Two costs, not one:
+    #
+    # 1. The glossary pass reads the file once and returns a short term list —
+    #    heavy input, light output.
+    # 2. Each chunk then carries the system prompt AND the glossary block, and
+    #    its output runs longer than the source because JSON wrapping and
+    #    Portuguese both expand it.
     chunks = [(payload_tokens.to_f / Legendator::Config.max_tokens_per_chunk).ceil, 1].max
-    input_tokens  = payload_tokens + (PROMPT_OVERHEAD_PER_CHUNK * chunks)
-    output_tokens = (payload_tokens * OUTPUT_RATIO).ceil
+
+    glossary_input  = [payload_tokens, Legendator::Glossary::MAX_SAMPLE_TOKENS].min
+    glossary_output = GLOSSARY_OUTPUT_TOKENS
+
+    input_tokens  = glossary_input + payload_tokens + (PROMPT_OVERHEAD_PER_CHUNK * chunks)
+    output_tokens = glossary_output + (payload_tokens * OUTPUT_RATIO).ceil
 
     cost_brl = (
       (input_tokens * @spec.input_usd + output_tokens * @spec.output_usd) / 1_000_000.0
@@ -92,17 +100,20 @@ class SrtSizeGate
   private
 
   # Calibrated against a real full-file run of movie-big-example.srt through
-  # openai/gpt-5.6-luna on 10/08/2026 (3.072 blocks, 7 chunks):
+  # openai/gpt-5.6-luna on 11/08/2026, with the glossary pass and 4-way
+  # parallelism in place (3.072 blocks, 7 chunks, US$ 0,036895 total):
   #
-  #   payload measured here   32.954 tokens
-  #   input reported by API   39.904  ->   993 overhead per chunk
-  #   output reported by API  43.679  ->  1,325x the payload
-  #   cost reported by API    US$ 0,031186
+  #   payload measured here      32.954 tokens
+  #   glossary pass              in 30.989 / out 1.787
+  #   chunks                     in 44.741 / out 43.928
+  #     -> overhead per chunk    1.684  (system prompt + glossary block)
+  #     -> output ratio          1,333x the payload
   #
-  # Both constants are rounded up from the measurement so the gate errs toward
-  # refusing a borderline file rather than accepting one that loses money.
-  PROMPT_OVERHEAD_PER_CHUNK = 1_050
-  OUTPUT_RATIO = 1.40
+  # Rounded up from the measurement so the gate errs toward refusing a
+  # borderline file rather than accepting one that loses money.
+  PROMPT_OVERHEAD_PER_CHUNK = 1_800
+  OUTPUT_RATIO = 1.45
+  GLOSSARY_OUTPUT_TOKENS = 2_000
 
   def failure(reason, **attrs)
     Measurement.new(

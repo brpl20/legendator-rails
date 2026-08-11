@@ -1,6 +1,22 @@
+<%# Poll for payment/translation progress. A plain <meta refresh> would wipe
+    whatever the customer is typing into the context box, so the reload is done
+    in JS and skipped while that field is being edited or holds unsaved text. %>
 <% if @translation.pending_payment? || @translation.paid? || @translation.processing? %>
   <% content_for :head do %>
-    <meta http-equiv="refresh" content="5">
+    <script>
+      (function () {
+        var INTERVAL = 5000;
+        function editing() {
+          var box = document.getElementById("context-box");
+          if (!box) return false;
+          if (document.activeElement === box) return true;
+          return box.value !== box.dataset.saved;
+        }
+        setInterval(function () {
+          if (!editing()) window.location.reload();
+        }, INTERVAL);
+      })();
+    </script>
   <% end %>
 <% end %>
 
@@ -17,6 +33,43 @@
     <div class="text-center mb-8">
       <h1 class="text-2xl font-bold text-white mb-2">Pagamento Pendente</h1>
       <p class="text-3xl font-bold text-emerald-400">R$ <%= "%.2f" % @translation.cost_brl %></p>
+    </div>
+
+    <%# What we read from the opening of the file, plus the context the customer
+        can still refine. Editable only while payment is pending. %>
+    <% if @translation.detected_title.present? || @translation.detected_summary.present? %>
+      <div class="rounded-xl p-6 mb-6" style="background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.3);">
+        <p class="text-xs tracking-widest uppercase mb-2" style="color: var(--toku-gold);">O que identificamos</p>
+        <% if @translation.detected_title.present? %>
+          <p class="text-lg font-semibold text-white mb-1"><%= @translation.detected_title %></p>
+        <% end %>
+        <% if @translation.detected_summary.present? %>
+          <p class="text-sm" style="color: var(--toku-silver);"><%= @translation.detected_summary %></p>
+        <% end %>
+        <p class="text-xs mt-3" style="color: rgba(203, 213, 225, 0.6);">
+          <%= @translation.subtitle_count %> legendas · <%= Translation::SUPPORTED_LANGUAGES[@translation.target_language] %>
+        </p>
+      </div>
+    <% end %>
+
+    <div class="rounded-xl p-6 mb-8" style="background: rgba(12, 10, 26, 0.6); border: 1px solid rgba(124, 58, 237, 0.2);">
+      <%= form_with model: @translation, url: update_context_translation_path(@translation), method: :patch, class: "space-y-3" do |f| %>
+        <%= f.label :context, "Contexto para a traducao", class: "block text-sm tracking-wider", style: "color: var(--toku-gold);" %>
+        <p class="text-xs" style="color: rgba(203, 213, 225, 0.6);">
+          Nomes de personagens, apelidos, tom da obra. Vale para o arquivo inteiro.
+          Da para ajustar ate o pagamento.
+        </p>
+        <%# data-saved lets the poller tell "unsaved edits" from "untouched". %>
+        <%= f.text_area :context, rows: 3,
+            id: "context-box",
+            maxlength: Translation::MAX_CONTEXT_LENGTH,
+            data: { saved: @translation.context.to_s },
+            class: "block w-full rounded-lg px-4 py-2.5 text-sm",
+            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+        <%= f.submit "Salvar contexto",
+            class: "rounded-lg px-5 py-2 text-sm font-semibold tracking-wider uppercase cursor-pointer",
+            style: "color: var(--toku-silver); border: 1px solid rgba(124, 58, 237, 0.4); background: transparent;" %>
+      <% end %>
     </div>
 
     <% if @translation.payment&.pix_qr_code_base64.present? %>

@@ -56,6 +56,23 @@ RSpec.describe SrtSizeGate do
     expect(result.reason).to include("legendas")
   end
 
+  # The glossary pass reads the whole file before any chunk is translated, and
+  # then rides along in every chunk's prompt. It is a real cost and the gate
+  # must charge for it — otherwise the gate underestimates, which is the one
+  # direction that loses money.
+  it "includes the glossary pass in the price" do
+    content = srt(2_000)
+    payload_tokens = Legendator::TokenCounter.new(model: AiModel::DEFAULT_SLUG)
+                                             .count(Legendator::SrtParser.new(content)
+                                             .extract_texts.map { |id, t| "#{id}|#{t}" }.join("\n"))
+
+    result = gate(content).measure
+
+    expect(result.input_tokens).to be > payload_tokens * 2,
+      "input should cover the glossary read plus the chunk payload"
+    expect(result.output_tokens).to be >= described_class::GLOSSARY_OUTPUT_TOKENS
+  end
+
   it "prices against the chosen model, not always the default" do
     content = srt(2_000)
     cheap = gate(content, model: "deepseek/deepseek-v4-flash-0731").measure
