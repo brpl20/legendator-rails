@@ -45,7 +45,7 @@
       <div>
         <%= f.label :model_used, "Modelo de IA", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
         <%= f.select :model_used,
-            Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
+            AiModel.options_for_select,
             {},
             class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
             style: "background: var(--toku-dark); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--toku-silver);" %>

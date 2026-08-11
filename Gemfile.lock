@@ -1,6 +1,7 @@
 GIT
   remote: https://github.com/brpl20/legendator-gem
-  revision: ad66ab59f4e47d3c5ab0a6369736039c383ed966
+  revision: d88ceab1de6080bb3cd02149b4f234452f01649e
+  branch: master
   specs:
     legendator (0.1.0)
       net-http
@@ -407,12 +408,12 @@ GEM
     thruster (0.1.19-aarch64-linux)
     thruster (0.1.19-arm64-darwin)
     thruster (0.1.19-x86_64-linux)
-    tiktoken_ruby (0.0.15.1-aarch64-linux)
-    tiktoken_ruby (0.0.15.1-aarch64-linux-musl)
-    tiktoken_ruby (0.0.15.1-arm-linux)
-    tiktoken_ruby (0.0.15.1-arm64-darwin)
-    tiktoken_ruby (0.0.15.1-x86_64-linux)
-    tiktoken_ruby (0.0.15.1-x86_64-linux-musl)
+    tiktoken_ruby (0.0.17-aarch64-linux)
+    tiktoken_ruby (0.0.17-aarch64-linux-musl)
+    tiktoken_ruby (0.0.17-arm-linux)
+    tiktoken_ruby (0.0.17-arm64-darwin)
+    tiktoken_ruby (0.0.17-x86_64-linux)
+    tiktoken_ruby (0.0.17-x86_64-linux-musl)
     timeout (0.6.1)
     tsort (0.2.0)
     turbo-rails (2.0.23)

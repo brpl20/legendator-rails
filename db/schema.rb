@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_15_024301) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_10_235500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,12 +59,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_15_024301) do
 
   create_table "translations", force: :cascade do |t|
     t.string "access_token", null: false
+    t.text "context"
     t.decimal "cost_ai", precision: 10, scale: 6, default: "0.0"
     t.decimal "cost_ai_brl", precision: 10, scale: 2, default: "0.0"
     t.decimal "cost_user", precision: 10, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.text "error_message"
-    t.string "model_used", default: "gpt-4.1-mini"
+    t.string "model_used", default: "openai/gpt-5.6-luna"
     t.string "original_filename", null: false
     t.float "processing_time"
     t.integer "status", default: 0

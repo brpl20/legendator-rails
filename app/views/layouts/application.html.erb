@@ -551,5 +551,14 @@
         </div>
       </div>
     </div>
+
+    <%# Deploy marker: version, commit and boot time. Discreet, but on every
+        page, so a deploy can be confirmed without opening a shell. %>
+    <div class="mx-auto max-w-5xl px-6 pb-6 text-center">
+      <p class="text-xs font-mono" style="color: rgba(148, 163, 184, 0.45);"
+         title="Ultimo boot: <%= AppVersion.booted_at_label %>">
+        <%= AppVersion %> · <%= AppVersion.booted_at_label %>
+      </p>
+    </div>
   </body>
 </html>

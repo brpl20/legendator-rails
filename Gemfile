@@ -43,7 +43,9 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 # Translation engine
-gem "legendator", git: "https://github.com/brpl20/legendator-gem"
+# branch is required so `bundle config set --local local.legendator <path>` can
+# point this at a checkout of legendator-gem during development.
+gem "legendator", git: "https://github.com/brpl20/legendator-gem", branch: "master"
 
 # Load environment variables from .env
 gem "dotenv-rails"

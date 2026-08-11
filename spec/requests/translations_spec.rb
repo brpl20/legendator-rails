@@ -31,7 +31,7 @@ RSpec.describe "Translations", type: :request do
         translation: {
           original_file: srt_file,
           target_language: "pt-BR",
-          model_used: "gpt-4.1-mini"
+          model_used: AiModel::DEFAULT_SLUG
         }
       }
       expect(response).to have_http_status(:redirect)

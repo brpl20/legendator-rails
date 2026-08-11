@@ -46,10 +46,23 @@
       <div>
         <%= f.label :model_used, "Modelo de IA", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
         <%= f.select :model_used,
-            Translation::AVAILABLE_MODELS.map { |k, v| [v, k] },
-            {},
+            AiModel.options_for_select,
+            { selected: AiModel::DEFAULT_SLUG },
             class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
             style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+      </div>
+
+      <div>
+        <%= f.label :context, "Contexto (opcional)", class: "block text-sm tracking-wider mb-2", style: "color: var(--toku-gold);" %>
+        <%= f.text_area :context,
+            rows: 3,
+            maxlength: Translation::MAX_CONTEXT_LENGTH,
+            placeholder: "Ex: Serie de ficcao cientifica. Traduzir \"Snow\" como \"Neve\" e manter \"Hodor\" sem traducao. Tom informal.",
+            class: "block w-full rounded-lg px-4 py-2.5 text-base transition",
+            style: "background: var(--toku-dark); border: 1px solid rgba(124, 58, 237, 0.3); color: var(--toku-silver);" %>
+        <p class="mt-2 text-xs" style="color: var(--toku-silver);">
+          Nomes de personagens, apelidos, tom da obra. A IA usa isso para manter a traducao consistente.
+        </p>
       </div>
 
       <div class="pt-2">

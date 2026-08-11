@@ -10,7 +10,7 @@ RSpec.describe CostCalculator do
       }
       allow(Legendator).to receive(:dry_run_content).and_return(dry_run_result)
 
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.estimate("fake srt content")
@@ -27,7 +27,7 @@ RSpec.describe CostCalculator do
       }
       allow(Legendator).to receive(:dry_run_content).and_return(dry_run_result)
 
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.estimate("tiny srt")
@@ -37,7 +37,7 @@ RSpec.describe CostCalculator do
 
   describe "#calculate" do
     it "converts USD to BRL with markups" do
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.calculate(0.01)
@@ -45,7 +45,7 @@ RSpec.describe CostCalculator do
     end
 
     it "calculates correctly for larger amounts" do
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       # cost_usd=1.00 x 5.50 x 1.10 x 3.0 = 18.15, ceil(2) => 18.15 or 18.16 due to float
@@ -54,7 +54,7 @@ RSpec.describe CostCalculator do
     end
 
     it "falls back to token estimation when cost is zero" do
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_exchange_rate).and_return(5.50)
 
       result = calculator.calculate(0.0, input_tokens: 5000, output_tokens: 5000)
@@ -65,7 +65,7 @@ RSpec.describe CostCalculator do
 
   describe "#fetch_exchange_rate" do
     it "returns fallback rate when API fails" do
-      calculator = CostCalculator.new(model: "gpt-4.1-mini")
+      calculator = CostCalculator.new(model: AiModel::DEFAULT_SLUG)
       allow(calculator).to receive(:fetch_rate_from_api).and_raise(StandardError)
 
       rate = calculator.send(:fetch_exchange_rate)

@@ -1,15 +1,17 @@
 class CostCalculator
-  MODEL_PRICING = {
-    "openai/gpt-4.1-mini"        => { input: 0.40,  output: 1.60 },
-    "google/gemini-2.5-flash"    => { input: 0.30,  output: 2.50 },
-    "openai/gpt-4.1"             => { input: 2.00,  output: 8.00 },
-    "deepseek-ai/deepseek-chat"  => { input: 0.14,  output: 0.28 },
-    "qwen/qwen3.5-9b"           => { input: 0.05,  output: 0.15 }
-  }.freeze
+  # Pricing lives in AiModel — one catalog, so a slug can never be offered in
+  # the UI without a matching price (the old table had both a slug that does
+  # not exist on OpenRouter and a stale price for one that does).
+  # Shared by SrtSizeGate, which needs the same rate to price a file before we
+  # accept it as the job will to bill it afterwards.
+  def self.usd_brl_rate
+    new.send(:fetch_exchange_rate)
+  end
 
-  def initialize(model: "openai/gpt-4.1-mini")
-    @model = model
-    @pricing = MODEL_PRICING[@model] || MODEL_PRICING["openai/gpt-4.1-mini"]
+  def initialize(model: AiModel::DEFAULT_SLUG)
+    spec = AiModel.find(model)
+    @model = spec.slug
+    @pricing = { input: spec.input_usd, output: spec.output_usd }
     pricing_config = Rails.application.config_for(:pricing)
     @markup_percentage = pricing_config.markup_percentage
     @financial_markup = pricing_config.financial_markup

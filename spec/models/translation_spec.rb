@@ -61,9 +61,17 @@ RSpec.describe Translation, type: :model do
       expect(Translation::SUPPORTED_LANGUAGES.size).to eq(9)
     end
 
-    it "has 5 available models" do
-      expect(Translation::AVAILABLE_MODELS.size).to eq(5)
-      expect(Translation::AVAILABLE_MODELS.keys).to include("openai/gpt-4.1-mini", "openai/gpt-4.1")
+    it "offers a small curated model catalog, all valid OpenRouter slugs" do
+      expect(AiModel.slugs).to eq([
+        "openai/gpt-5.6-luna",
+        "deepseek/deepseek-v4-flash-0731"
+      ])
+      expect(AiModel.slugs).to all(match(%r{\A[\w.-]+/[\w.-]+\z}))
+    end
+
+    it "defaults to the recommended model" do
+      expect(AiModel.default.slug).to eq(AiModel::DEFAULT_SLUG)
+      expect(AiModel.fallback_slugs).not_to include(AiModel::DEFAULT_SLUG)
     end
   end
 end

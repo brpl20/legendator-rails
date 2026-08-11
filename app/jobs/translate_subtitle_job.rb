@@ -1,12 +1,27 @@
 class TranslateSubtitleJob < ApplicationJob
   queue_as :default
 
-  # Retry on transient AI provider failures (after gem-level retries + fallback are exhausted)
-  retry_on Legendator::TranslationError, wait: :polynomially_longer, attempts: 3
-  retry_on Net::OpenTimeout, Net::ReadTimeout, wait: 30.seconds, attempts: 3
+  # Retry on transient AI failures (after gem-level retries + model fallback are
+  # exhausted). On the final attempt the block runs instead of re-raising, so the
+  # record lands in :failed — otherwise it stays :processing forever and the show
+  # page, which meta-refreshes every 5s while processing, spins with no end.
+  retry_on Legendator::TranslationError, wait: :polynomially_longer, attempts: 3 do |job, error|
+    mark_failed(job.arguments.first, error)
+  end
+  retry_on Net::OpenTimeout, Net::ReadTimeout, wait: 30.seconds, attempts: 3 do |job, error|
+    mark_failed(job.arguments.first, error)
+  end
 
   # Don't retry on permanent failures
   discard_on ActiveJob::DeserializationError
+
+  def self.mark_failed(translation_id, error)
+    translation = Translation.find_by(id: translation_id)
+    return unless translation
+
+    Rails.logger.error("[TranslateSubtitleJob] giving up on translation #{translation_id}: #{error.class}: #{error.message}")
+    translation.update!(status: :failed, error_message: error.message)
+  end
 
   def perform(translation_id)
     translation = Translation.find(translation_id)
@@ -18,8 +33,8 @@ class TranslateSubtitleJob < ApplicationJob
     result = Legendator.translate_content(
       content,
       lang: translation.target_language,
-      provider: :openrouter,
-      model: translation.model_used
+      model: translation.model_used,
+      context: translation.context.presence
     )
 
     if result.consistency && !result.consistency.pass?

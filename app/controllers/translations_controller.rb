@@ -5,10 +5,31 @@ class TranslationsController < ApplicationController
 
   def create
     @translation = Translation.new(translation_params)
-    @translation.original_filename = params.dig(:translation, :original_file)&.original_filename
+    upload = params.dig(:translation, :original_file)
+    @translation.original_filename = upload&.original_filename
+
+    # Measure before charging. A flat price on an unbounded file is a standing
+    # invitation to upload five movies at once and pay the minimum for them.
+    content = read_upload(upload)
+
+    if content.nil?
+      @translation.errors.add(:original_file, "e obrigatorio")
+      return render :new, status: :unprocessable_entity
+    end
+
+    measurement = SrtSizeGate.new(content).measure
+
+    unless measurement.ok?
+      @translation.errors.add(:original_file, measurement.reason)
+      return render :new, status: :unprocessable_entity
+    end
 
     if @translation.save
-      @translation.update!(cost_user: 1.00)
+      estimate = CostCalculator.new(model: @translation.model_used).estimate(content)
+      @translation.update!(
+        cost_user: estimate[:cost_user_brl],
+        subtitle_count: measurement.subtitles
+      )
 
       PixService.new.create_charge(@translation)
 
@@ -69,7 +90,16 @@ class TranslationsController < ApplicationController
   private
 
   def translation_params
-    params.require(:translation).permit(:original_file, :target_language, :model_used)
+    params.require(:translation).permit(:original_file, :target_language, :model_used, :context)
+  end
+
+  # The upload is still an IO here — the blob is not in the storage service
+  # until after save, so this is the only place the bytes are readable.
+  def read_upload(upload)
+    return nil unless upload.respond_to?(:read)
+    content = upload.read
+    upload.rewind
+    content
   end
 
   def find_translation!

@@ -12,13 +12,6 @@ class Translation < ApplicationRecord
     expired: 5
   }
 
-  validates :original_filename, presence: true
-  validates :target_language, presence: true
-  validates :access_token, presence: true, uniqueness: true
-  validate :validate_srt_file
-
-  before_validation :generate_access_token, on: :create
-
   SUPPORTED_LANGUAGES = {
     "pt-BR" => "Portugues (Brasil)",
     "pt-PT" => "Portugues (Portugal)",
@@ -31,13 +24,24 @@ class Translation < ApplicationRecord
     "zh"    => "Chines"
   }.freeze
 
-  AVAILABLE_MODELS = {
-    "openai/gpt-4.1-mini"        => "GPT-4.1 Mini (padrao)",
-    "google/gemini-2.5-flash"    => "Gemini Flash (rapido)",
-    "openai/gpt-4.1"             => "GPT-4.1 (premium)",
-    "deepseek-ai/deepseek-chat"  => "DeepSeek V3 (economico)",
-    "qwen/qwen3.5-9b"           => "Qwen 3.5 (ultra economico)"
-  }.freeze
+  # Free-text guidance the user can give the translator: character name
+  # translations, tone, setting. Capped so it cannot become a prompt-sized
+  # payload of its own.
+  MAX_CONTEXT_LENGTH = 1_000
+
+  validates :original_filename, presence: true
+  validates :target_language, presence: true
+  validates :access_token, presence: true, uniqueness: true
+  validates :context, length: { maximum: MAX_CONTEXT_LENGTH }
+  validate :validate_srt_file
+
+  # Inclusion checks only on create: existing rows may carry a retired slug or
+  # language and must stay updatable — the job writes status and token counts
+  # back to them after translating.
+  validates :target_language, inclusion: { in: SUPPORTED_LANGUAGES.keys }, on: :create
+  validates :model_used, inclusion: { in: ->(_) { AiModel.slugs } }, on: :create
+
+  before_validation :generate_access_token, on: :create
 
   def to_param
     access_token
