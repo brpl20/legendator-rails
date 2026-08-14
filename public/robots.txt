@@ -1,1 +1,12 @@
 # See https://www.robotstxt.org/robotstxt.html for documentation on how to use the robots.txt file
+
+User-agent: *
+Allow: /
+
+# Cada traducao tem id proprio na URL (/translations/:id e .../download) e
+# nao deve entrar no indice. O formulario /translations/new deve - e por isso
+# vem depois, como regra mais especifica.
+Disallow: /translations/
+Allow: /translations/new
+
+Sitemap: https://www.legendator.com.br/sitemap.xml

@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   root "pages#home"
   get "politica-de-privacidade", to: "pages#politica_de_privacidade", as: :politica_de_privacidade
+  get "sitemap.xml", to: "pages#sitemap", as: :sitemap, defaults: { format: "xml" }
 
   resources :translations, only: [:new, :create, :show] do
     member do

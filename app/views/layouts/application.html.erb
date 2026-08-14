@@ -1,7 +1,11 @@
 <!DOCTYPE html>
-<html class="h-full">
+<html lang="pt-BR" class="h-full">
   <head>
     <title><%= content_for(:title) || "Legendator" %></title>
+    <%# Cada view define :description com content_for. Sem isso o Google
+        inventa o trecho do resultado de busca. %>
+    <meta name="description" content="<%= content_for(:description) || "Legendator traduz e legenda seus videos automaticamente. Envie o arquivo, escolha o idioma e receba a legenda pronta." %>">
+    <link rel="canonical" href="<%= request.original_url.split('?').first %>">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Legendator">
